@@ -1,0 +1,12 @@
+.todo-app {
+  text-align: center;
+}
+
+.todo-list {
+  display: inline-block;
+  text-align: left;
+}
+
+.error {
+  color: red;
+}
