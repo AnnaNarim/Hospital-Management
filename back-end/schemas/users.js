@@ -1,32 +1,70 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt =require('bcrypt')
+const Sequelize=require('sequelize')
+const  DoctorNotFound = require(`../errors/errors.js`).DoctorNotFound;
 
-const SALT_INIT = process.env.SALT_INIT;
+module.exports = (sequelize, DataTypes, doctors) => {
+    
+    const users= sequelize.define('users',{
+        email:{
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false
+        },
+        password:{
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    },{
+        freezeTableName: true ,
+        timestamps: false
+    }
+    );
+    
+    users.CreateNewUser = async function(user) {
+           
+        //select emails from doctors table
+        let emails = await doctors.findAll({
+            attributes: ['email'],
+            raw:true
+        })
 
-const user = new mongoose.Schema({
-    username: {type: String, required: true, unique: true},
-    password: {type: String, required: true},
-    created_on: {type: Date, default: Date.now()}
-})
+        emails = emails.map(element=>element.email)
+        
+        //look wheater you are a doctor
+        if(!Array.from(emails).find(element=> element===user.email)) {
+            throw new DoctorNotFound();
+        }
+        // // if (!user.changed('password')) {
+        // //     return sequelize.Promise.reject("not modified");
+        // //   }
 
-user.pre('save', function (next) {
-    if(!this.isModified('password')) {
-        return next();
+        //if you are let you create account
+        const SALT_INIT = 5;
+        const salt = bcrypt.genSaltSync(SALT_INIT)
+        const hashedPassword =bcrypt.hashSync(user.password, salt)
+        user.password =hashedPassword;
+        
+        users.create({email: user.email, password: user.password, position:'doctor'}).then(()=>console.log('Created'))
+        
+        return 1
     }
 
-    const salt = bcrypt.genSaltSync(SALT_INIT);
+    users.findUserByEmail = function (user_email) {
+        return  users.findOne({where: {email: user_email}})
+    }
+               
+    users.prototype.comparePassword =  function (password) {  
+        return bcrypt.compareSync(password, this.password);
+    }
     
-    this.password = bcrypt.hashSync(this.password, salt);
-
-    next();
-})
-
-user.methods.comparePassword = function (password) {
-    return bcrypt.compareSync(password, this.password);
+    return users
 }
 
-user.statics.findUserByUsername = function (username) {
-    return this.findOne({username}).exec();
-}
 
-module.exports = mongoose.model('User', user);
+
+
+
+
+
+
+

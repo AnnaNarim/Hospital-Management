@@ -1,21 +1,42 @@
-const User = require('../schemas/users');
+const Sequelize=require('sequelize')
+const users=require('../schemas/db').users
+const jwt=require('jsonwebtoken')
+const JWT_KEY = String(process.env.JWT_KEY);
+const { DoctorNotFound,UserAlreadyExists,EmailIsIncorrect, PasswordIncorrect} = require(`../errors/errors.js`);
 
 module.exports = {
-    createUser: (user) => {
-        const dbUser = new User(user);
+    
+    createUser: async (user) => {
 
-        return dbUser.save();
+        const newUser= await  users.CreateNewUser(user)
+
+        if(!newUser) {
+            throw new UserAlreadyExists();
+        }
+        return newUser;
     },
 
-    login: async ({username, password}) => {
-        const user = await User.findUserByUsername(username);
+    login: async (email, password) => {
 
-        if(!user) throw new Error('login error');
+        const user = await users.findUserByEmail(email);
 
-        const result = user.comparePassword(password);
+        if(!user){ 
+            throw new  EmailIsIncorrect();
+        }
+         if(!user.comparePassword(password)){ 
+             throw new PasswordIncorrect();
+         }
 
-        if(!result) throw new Error('login error');
-
-        return user;
+         const accessToken = jwt.sign(
+            {   
+                 email,
+                 userid: user._id
+            },
+             JWT_KEY, 
+            {
+            expiresIn: "24 hours"
+        });
+        
+        return { email, accessToken };
     }
 }
