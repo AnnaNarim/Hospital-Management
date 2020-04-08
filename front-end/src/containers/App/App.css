@@ -7,6 +7,10 @@
 }
 
 .home {
+	width: 100%;
+}
+
+.protected-route {
 	display: flex;
 	flex-direction: row;
 	width: 100%;

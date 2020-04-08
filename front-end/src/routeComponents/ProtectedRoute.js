@@ -58,7 +58,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     //   return (<Redirect to="/login" from={`${props.location}`} />);
     // } else {
       return (
-        <Container className='home'>
+        <Container className='protected-route'>
             <StickyMenu
               stickBottom
               style={{

@@ -7,7 +7,7 @@ import PublicRoute from './routeComponents/PublicRoute';
 import Login from './containers/Login';
 // import Logout from './containers/Logout';
 // import SignUp from './containers/SignUp';
-import AddTodo from './components/AddTodo';
+import Home from './containers/Home';
 // import NotFound from './containers/NotFound';
 
 const routes = (
@@ -15,7 +15,7 @@ const routes = (
     <Switch>
       <Redirect exact from="/" to="/home" />
 
-      <ProtectedRoute exact path="/home" component={AddTodo} />
+      <ProtectedRoute exact path="/home" component={Home} />
       <PublicRoute path="/login" component={Login} />
     </Switch>
   </>
