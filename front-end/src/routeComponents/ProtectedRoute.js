@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, Redirect, withRouter } from 'react-router-dom';
-import { Container } from 'semantic-ui-react'
 import { connect } from 'react-redux';
 import { StickyMenu, Logo } from 'evermut';
 import { styleOptions } from '../styleOptions';
@@ -58,7 +57,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     //   return (<Redirect to="/login" from={`${props.location}`} />);
     // } else {
       return (
-        <Container className='protected-route'>
+        <div className='protected-route'>
             <StickyMenu
               stickBottom
               style={{
@@ -72,10 +71,10 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
               secondaryMenu={secondaryMenu}
               selectedColor={styleOptions.colors.selected}
             />
-          <Container width={styleOptions.fullWidth} display='flex' flexDirection="column">
+          <div className='component'>
             <Component {...rest} {...props} />
-          </Container>
-        </Container>
+          </div>
+        </div>
       )
     // }
   };

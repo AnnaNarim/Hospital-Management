@@ -29,6 +29,8 @@ export const styleOptions = {
   padding: distance,
   margin: distance,
 
+  containerWidth: 'calc(100% - 80px)',
+
   borderRadius: 3,
 
   height,

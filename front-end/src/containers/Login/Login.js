@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Image } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
 import { Login } from 'evermut';
 // import { login } from '../../actions/auth';
 import logo from "../../static/logo4.png";
 import background from "../../static/background.jpg";
 import { styleOptions } from '../../styleOptions';
+import './Login.css';
 
 class LogIn extends Component {
   login(item) {
@@ -44,9 +45,9 @@ class LogIn extends Component {
 
   render () {
     return (
-      <Container className='login'>
+      <div className='login'>
         {this.getView(styleOptions.smallContainer)}
-      </Container>
+      </div>
     );
   }
 }

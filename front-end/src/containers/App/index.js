@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Container } from 'semantic-ui-react';
+import { Container, Segment } from 'semantic-ui-react';
 import { Loader } from 'evermut';
 import './App.css';
 // import { fetchCurrentUser } from '../../actions/auth';
@@ -39,9 +39,9 @@ class App extends Component {
     // const { loading } = this.state;
 
     return (
-      <Container as='div' className='wrapper'>
+      <div className='wrapper'>
         { (loading && <Loader />) || children }
-      </Container>
+      </div>
     );
   }
 }
