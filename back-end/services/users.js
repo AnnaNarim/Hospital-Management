@@ -1,7 +1,8 @@
 const Sequelize=require('sequelize')
 const users=require('../schemas/db').users
 const jwt=require('jsonwebtoken')
-const JWT_KEY = String(process.env.JWT_KEY);
+require("dotenv").config();
+const JWT_KEY = process.env.JWT_KEY;
 const { DoctorNotFound,UserAlreadyExists,EmailIsIncorrect, PasswordIncorrect} = require(`../errors/errors.js`);
 
 module.exports = {
