@@ -15,3 +15,29 @@
 .component {
 	width: 100%;
 }
+
+.not-found {
+	    position: absolute;
+    top: calc(50% - 130px);
+    left: calc(50% - 170px);
+    text-align: center;
+	background: white;
+}
+
+.not-found h1 {
+	color: #163C7D!important;
+	margin-bottom: 0!important;
+	font-size: 8rem!important;
+  line-height: 1!important;
+}
+
+.not-found h2 {
+	color: #163C7D!important;
+	font-size: 4rem!important;
+	margin-top: 0!important;
+}
+
+.not-found h4 {
+	color: #03ace8!important;
+	font-size: 2rem!important;
+}

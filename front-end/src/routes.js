@@ -8,7 +8,7 @@ import Login from './containers/Login';
 // import Logout from './containers/Logout';
 // import SignUp from './containers/SignUp';
 import Home from './containers/Home';
-// import NotFound from './containers/NotFound';
+import NotFound from './containers/NotFound';
 
 const routes = (
   <>
@@ -17,6 +17,8 @@ const routes = (
 
       <ProtectedRoute exact path="/home" component={Home} />
       <PublicRoute path="/login" component={Login} />
+
+      <Route path="*" component={NotFound} />
     </Switch>
   </>
 );

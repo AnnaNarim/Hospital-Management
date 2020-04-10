@@ -16,7 +16,7 @@ class LogIn extends Component {
   }
 
   getView(width) {
-    const { error, serverDown } = this.props;
+    const { error } = this.props;
 
     return (
       <>
