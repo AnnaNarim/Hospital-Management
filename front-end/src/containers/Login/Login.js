@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Image } from 'semantic-ui-react';
 import { Login } from 'evermut';
 // import { login } from '../../actions/auth';
-import logo from "../../static/logo4.png";
+import logo from "../../static/logo.png";
 import background from "../../static/background.jpg";
 import { styleOptions } from '../../styleOptions';
 import './Login.css';

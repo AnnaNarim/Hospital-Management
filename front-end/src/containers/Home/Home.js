@@ -4,9 +4,10 @@ import { Divider, Header, Icon, Button, Card, Image, Popup } from 'semantic-ui-r
 import { styleOptions } from '../../styleOptions';
 import './Home.css';
 
-import cardiology from '../../static/card.png';
-import neurology from '../../static/neur.png';
-import oncology from '../../static/onc.png';
+import cardiology from '../../static/card.jpg';
+import neurology from '../../static/neur.jpg';
+import oncology from '../../static/onc.jpg';
+import rheumatology from '../../static/rheum.jpg';
 
 class Home extends Component {
   constructor() {
@@ -26,7 +27,8 @@ class Home extends Component {
       departments: [
         {id: 1, name: "Cardiology", img: cardiology, doctors: 12, nurses: 4, patients: 30},
         {id: 2, name: "Neurology", img: neurology, doctors: 10, nurses: 5, patients: 35},
-        {id: 3, name: "Oncology", img: oncology, doctors: 6, nurses: 2, patients: 20}
+        {id: 3, name: "Oncology", img: oncology, doctors: 6, nurses: 2, patients: 20},
+        {id: 3, name: "Rheumatology", img: rheumatology, doctors: 3, nurses: 1, patients: 15}
       ]
     };
   }

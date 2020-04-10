@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { StickyMenu, Logo } from 'evermut';
 import { styleOptions } from '../styleOptions';
 
-import logo from "../static/logo4_light.png";
+import logo from "../static/logo_light.png";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { history, path } = rest;
