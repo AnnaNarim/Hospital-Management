@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Divider, Header, Icon, Button, Card, Image, Popup } from 'semantic-ui-react';
-import { styleOptions } from '../../styleOptions';
 import './Home.css';
-
+import AddPerson from '../../components/AddPerson';
 import cardiology from '../../static/card.jpg';
 import neurology from '../../static/neur.jpg';
 import oncology from '../../static/onc.jpg';
@@ -14,6 +13,8 @@ class Home extends Component {
     super();
 
     this.state = {
+      openAdd: false,
+      type: '',
       myNurses: [
         {id: 1, name: "Tom Smith"},
         {id: 2, name: "Sam Woo"},
@@ -33,7 +34,13 @@ class Home extends Component {
     };
   }
 
-  getCard(title, description, icon, count) {
+  clickAdd = (type) => {
+    const { openAdd } = this.state;
+
+    this.setState({ openAdd: !openAdd, type  });
+  }
+
+  getCard(title, description, icon, count, id) {
     return (
       <Card>
         <Card.Content>
@@ -45,7 +52,7 @@ class Home extends Component {
         </Card.Content>
         <Card.Content extra>
           <div className='ui two buttons'>
-            <Button basic color='blue'>
+            <Button basic color='blue' onClick={() => this.clickAdd(id)}>
               <Icon name='add circle' />
               Add
             </Button>
@@ -59,13 +66,14 @@ class Home extends Component {
     );
   }
 
-  getMyInfo() {
-    const { myNurses, myPatients } = this.state;
+  getMyInfo = () => {
+    const { myNurses, myPatients, type, openAdd } = this.state;
 
     return (
       <div className='myInfo-cards'>
-        {this.getCard('My Nurses', 'Nurses under my responsibility', 'male', myNurses.length)}
-        {this.getCard('My Patients', 'Patients under my responsibility', 'bed', myPatients.length)}
+        {this.getCard('My Nurses', 'Nurses under my responsibility', 'male', myNurses.length, 'nurse')}
+        {this.getCard('My Patients', 'Patients under my responsibility', 'bed', myPatients.length, 'patient')}
+        {openAdd && <AddPerson type={type} isOpen={openAdd} clicked={() => this.clickAdd()} />}
       </div>
     );
   }
@@ -78,7 +86,7 @@ class Home extends Component {
         {departments && departments.map((item, index) => {
           const { id, name, img, doctors, nurses, patients } = item;
           return (
-            <Card className='dept-card'>
+            <Card className='dept-card' key={`dept-key-${index}`}>
               <Image src={img} wrapped ui={false} size='small'/>
               <Card.Content>
                 <Card.Header>{name}</Card.Header>

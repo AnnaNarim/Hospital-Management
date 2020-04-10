@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Container, Segment } from 'semantic-ui-react';
 import { Loader } from 'evermut';
 import './App.css';
 // import { fetchCurrentUser } from '../../actions/auth';
@@ -24,11 +23,6 @@ class App extends Component {
   //   }
   //   if (prevState.propsLoading && !nextProps.loading) {
   //     return { propsLoading: false, loading: false };
-  //   }
-
-  //   if(nextProps.serverDown) {
-  //     toaster.closeAll();
-  //     toaster.danger(serverDown);
   //   }
 
   //   return null;
