@@ -1,0 +1,56 @@
+.home {
+	width: 100%;
+	padding: 15px;
+}
+
+.departments-cards {
+	display: flex;
+	margin-top: 30px;
+}
+
+.dept-card {
+	width: 200px!important;
+	min-height: 265px;
+	margin-right: 15px!important;
+	margin-bottom: 15px!important;
+	margin-top: 0!important;
+}
+
+.dept-card img {
+	width: 200px!important;
+	height: 150px!important;
+}
+
+.dept-card a {
+}
+
+.extra div:first-child {
+	margin-bottom: 7.5px;
+	color: #3f3f3f;
+}
+
+.extra div:nth-child(2) {
+	display: flex;
+	justify-content: space-around;
+}
+
+.description {
+	display: flex;
+	justify-content: space-around;
+}
+
+.myInfo-cards {
+	display: flex;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.myInfo-cards > div {
+	margin-right: 15px!important;
+	margin-top: 0!important;
+	margin-bottom: 0!important;
+}
+
+.divider h4{
+	color: #163C7D!important;
+}

@@ -1,12 +1,17 @@
-.todo-app {
-  text-align: center;
-}
-
-.todo-list {
-  display: inline-block;
-  text-align: left;
-}
-
 .error {
   color: red;
+}
+
+.wrapper {
+	background: #f4f5f6
+}
+
+.protected-route {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+
+.component {
+	width: 100%;
 }

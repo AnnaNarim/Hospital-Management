@@ -1,14 +1,57 @@
-import React from "react";
-import AddTodo from "../../components/AddTodo";
-import TodoList from "../../components/TodoList";
-import "./App.css";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Container, Segment } from 'semantic-ui-react';
+import { Loader } from 'evermut';
+import './App.css';
+// import { fetchCurrentUser } from '../../actions/auth';
 
-export default function App() {
-  return (
-    <div className="todo-app">
-      <h1>Todo List</h1>
-      <AddTodo />
-      <TodoList />
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    // props._getUser();
+
+    this.state = {
+      loading: true,
+      propsLoading: props.loading
+    }
+  }
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   if (!prevState.propsLoading && nextProps.loading) {
+  //     return { propsLoading: true };
+  //   }
+  //   if (prevState.propsLoading && !nextProps.loading) {
+  //     return { propsLoading: false, loading: false };
+  //   }
+
+  //   if(nextProps.serverDown) {
+  //     toaster.closeAll();
+  //     toaster.danger(serverDown);
+  //   }
+
+  //   return null;
+  // }
+
+  render() {
+    const { children, loading } = this.props;
+    // const { loading } = this.state;
+
+    return (
+      <div className='wrapper'>
+        { (loading && <Loader />) || children }
+      </div>
+    );
+  }
 }
+
+const mapStateToProps = state => ({
+  loading: state.auth.loading,
+});
+
+export const mapDispatchToProps = dispatch => ({
+  // _getUser: () => dispatch(fetchCurrentUser())
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
