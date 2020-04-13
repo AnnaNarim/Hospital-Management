@@ -26,10 +26,10 @@ class Home extends Component {
         {id: 4, name: "Jerry Asd"},
       ],
       departments: [
-        {id: 1, name: "Cardiology", img: cardiology, doctors: 12, nurses: 4, patients: 30},
-        {id: 2, name: "Neurology", img: neurology, doctors: 10, nurses: 5, patients: 35},
-        {id: 3, name: "Oncology", img: oncology, doctors: 6, nurses: 2, patients: 20},
-        {id: 3, name: "Rheumatology", img: rheumatology, doctors: 3, nurses: 1, patients: 15}
+        {id: 1, name: "Cardiology", img: cardiology, doctors: 12, nurses: 4, patients: 30, location: 'Somewhere 1', phone: '+123'},
+        {id: 2, name: "Neurology", img: neurology, doctors: 10, nurses: 5, patients: 35, location: 'Somewhere 2', phone: '+145'},
+        {id: 3, name: "Oncology", img: oncology, doctors: 6, nurses: 2, patients: 20, location: 'Somewhere 3', phone: '+234'},
+        {id: 3, name: "Rheumatology", img: rheumatology, doctors: 3, nurses: 1, patients: 15, location: 'Somewhere 4', phone: '+564'}
       ]
     };
   }
@@ -84,29 +84,43 @@ class Home extends Component {
     return (
       <div className='departments-cards'>
         {departments && departments.map((item, index) => {
-          const { id, name, img, doctors, nurses, patients } = item;
+          const { id, name, img, doctors, nurses, patients, location, phone } = item;
           return (
             <Card className='dept-card' key={`dept-key-${index}`}>
               <Image src={img} wrapped ui={false} size='small'/>
               <Card.Content>
                 <Card.Header>{name}</Card.Header>
                 <Card.Description>
+                  <div>
+                    <Popup
+                      trigger={<span><Icon name='doctor' /> {doctors}</span>}
+                      content='Doctors'
+                      position='top center'
+                      inverted
+                    />
+                    <Popup
+                      trigger={<span><Icon name='male' /> {nurses}</span>}
+                      content='Nurses'
+                      position='top center'
+                      inverted
+                    />
+                    <Popup
+                      trigger={<span><Icon name='bed' /> {patients}</span>}
+                      content='Patients'
+                      position='top center'
+                      inverted
+                    />
+                  </div>
                   <Popup
-                    trigger={<span><Icon name='doctor' /> {doctors}</span>}
-                    content='Doctors'
-                    position='top center'
+                    trigger={<div><Icon name='point' /> {location}</div>}
+                    content='Location'
+                    position='top left'
                     inverted
                   />
                   <Popup
-                    trigger={<span><Icon name='male' /> {nurses}</span>}
-                    content='Nurses'
-                    position='top center'
-                    inverted
-                  />
-                  <Popup
-                    trigger={<span><Icon name='bed' /> {patients}</span>}
-                    content='Patients'
-                    position='top center'
+                    trigger={<div><Icon name='phone' /> {phone}</div>}
+                    content='Phone'
+                    position='top left'
                     inverted
                   />
                 </Card.Description>
