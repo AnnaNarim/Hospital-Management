@@ -34,13 +34,19 @@ class Home extends Component {
     };
   }
 
-  clickAdd = (type) => {
+  clickAdd = type => {
     const { openAdd } = this.state;
 
     this.setState({ openAdd: !openAdd, type  });
   }
 
-  getCard(title, description, icon, count, id) {
+  clickView = type => {
+    const { history } = this.props;
+
+    history.push(`/my/${type}`);
+  }
+
+  getCard(title, description, icon, count, type) {
     return (
       <Card>
         <Card.Content>
@@ -52,11 +58,11 @@ class Home extends Component {
         </Card.Content>
         <Card.Content extra>
           <div className='ui two buttons'>
-            <Button basic color='blue' onClick={() => this.clickAdd(id)}>
+            <Button basic color='blue' onClick={() => this.clickAdd(type)}>
               <Icon name='add circle' />
               Add
             </Button>
-            <Button basic color='violet'>
+            <Button basic color='violet' onClick={() => this.clickView(type)}>
               <Icon name='list alternate' />
               View
             </Button>

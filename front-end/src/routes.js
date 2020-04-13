@@ -8,6 +8,8 @@ import Login from './containers/Login';
 // import Logout from './containers/Logout';
 // import SignUp from './containers/SignUp';
 import Home from './containers/Home';
+import Nurses from './containers/Nurses';
+// import Patients from './containers/Patients';
 import NotFound from './containers/NotFound';
 
 const routes = (
@@ -16,6 +18,8 @@ const routes = (
       <Redirect exact from="/" to="/home" />
 
       <ProtectedRoute exact path="/home" component={Home} />
+      <ProtectedRoute exact path="/my/nurse" component={Nurses} />
+
       <PublicRoute path="/login" component={Login} />
 
       <Route path="*" component={NotFound} />
@@ -24,11 +28,8 @@ const routes = (
 );
 
 export default routes;
-
+// <ProtectedRoute exact path="/my/patients" component={Patients} />
 
 // <ProtectedRoute path="/logout" component={Logout} />
 
-//       <PublicRoute path="/login" component={Login} />
 //       <PublicRoute path="/signup" component={SignUp} />
-
-//       <Route path="*" component={NotFound} />
