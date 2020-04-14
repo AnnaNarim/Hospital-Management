@@ -5,8 +5,9 @@ const asyncHandler = require('express-async-handler');
 const users=require('../services/users')
 const passport=require('passport')
 
+//test auth
 router.get('/hi', passport.authenticate('jwt', {session:false}), (req,res,next) =>{
-    res.json('You are autherized')
+    res.json(req.user.email)
 })
 router.post('/signup', asyncHandler(async (req, res) => {
     const result = await users.createUser(req.body);
