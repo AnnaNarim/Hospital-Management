@@ -2,7 +2,6 @@ const Sequelize=require('sequelize')
 const departments=require('../schemas/db').departments
 const departmentsPhones=require('../schemas/db').departmentsPhones
 
-//JOINI PAHNA PETQ STGUEL< DEPARTMENT PHONES AVELACREL< AUTHI PAH@ EREKVA AVELACRAC
 module.exports={
     //list all departments' names ,locations, and phone numbers
     getDepartments:()=>{
