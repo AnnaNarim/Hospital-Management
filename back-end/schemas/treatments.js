@@ -3,31 +3,11 @@ module.exports = (sequelize, DataTypes) => {
         notes:{
             type: DataTypes.TEXT
         },
-        date:{
+        start_date:{
             type:DataTypes.DATE,
+            unique:'h',
             allowNull:false,
-            unique: 'nurse_patient_date'
-        },
-        //ete nurse a delete linum, mez petqa vor mna history te che
-        // nurse_id:{
-        //     references: {
-        //         model: nurses,
-        //         key: 'id'
-        //     },
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false,
-        //     unique: 'nurse_patient_date'
-        // },
-        // //nuyn@ patienti hamar
-        // patient_id:{
-        //     references: {
-        //         model: patients,
-        //         key: 'id'
-        //     },
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false,
-        //     unique: 'nurse_patient_date'
-        // }
+        }
     },{
         timestamps: false
         }

@@ -1,13 +1,12 @@
 const Sequelize = require('sequelize')
 //const sequelizeTransforms = require('sequelize-transforms');
 
-//To connect to the database, you must create a Sequelize instance. 
-//create Sequelize instance 
-const sequelize= new Sequelize('hospital', 'root', 'silva123', {
+
+const sequelize= new Sequelize('hospital2', 'root', 'silva123', {
   host: 'localhost',
   dialect: 'mysql', //|'sqlite'|'postgres'|'mssql'
 }); //{query:{raw:true}});
-
+const queryInterface = sequelize.getQueryInterface()
 //test the connection
 // sequelize.authenticate().then(() => {
 //   console.log('Connection has been established successfully.');
@@ -16,147 +15,95 @@ const sequelize= new Sequelize('hospital', 'root', 'silva123', {
 // })
 //sequelizeTransforms(sequelize)
 const departments =require('./departments.js')(sequelize,Sequelize)
-const departmentsPhones=require('./departmentsPhones.js')(sequelize,Sequelize)
+const doctors =require('./doctors.js')(sequelize,Sequelize)
+const headDoctors =require('./headDoctors.js')(sequelize,Sequelize)
+const nurses =require('./nurses.js')(sequelize,Sequelize)
+const doctorsNurses= require('./doctorsNurses')(sequelize,Sequelize)
+const patients =require('./patients.js')(sequelize,Sequelize)
+const treatments =require('./treatments.js')(sequelize,Sequelize)
 
-//OneToMany Department-Phones
-departments.hasMany(departmentsPhones, {
-  foreignKey: {
-    name: 'department_name',
-    type:Sequelize.STRING,
-    allowNull: false,
-    primaryKey: 'department_phone'
-  }, sourceKey: 'name'
-})
-departmentsPhones.belongsTo(departments, {foreignKey:'department_name', targetKey:'name'})
-
- const doctors =require('./doctors.js')(sequelize,Sequelize)
 // One to Many: Doctors-Departments 
  departments.hasMany(doctors, {
   foreignKey: {
+    name: 'department_name',
     allowNull: false
-}})
-doctors.belongsTo(departments)
+  }, sourceKey:'name'})
+doctors.belongsTo(departments, {foreignKey:'department_name', targetKey:'name'})
 
-const doctorsPhones =require('./doctorsPhones.js')(sequelize,Sequelize)
-
- doctors.hasMany(doctorsPhones, {
-  foreignKey: {
-    name: 'doctor_id',
-    type:Sequelize.INTEGER,
-    allowNull: false,
-    primaryKey: 'doctor_phone'
-  }, sourceKey: 'id'
-})
-doctorsPhones.belongsTo(doctors, {foreignKey:'doctor_id', targetKey:'id'})
-
-const headDoctors =require('./headDoctors.js')(sequelize,Sequelize)
-
-departments.hasMany(headDoctors,{
-  foreignKey: {
+//headDoctors - doctors
+headDoctors.belongsTo(doctors,{ 
+  foreignKey:{
     name: 'doctor_id',
     type:Sequelize.INTEGER,
     allowNull: false,
     primaryKey: 'head_doctor'
+  }, targetKey:'id',
+  onDelete: 'CASCADE'})
+
+doctors.hasOne(headDoctors,{
+  foreignKey: {
+    name: 'doctor_id'
   }, 
-  sourceKey: 'id',
-  onDelete: 'CASCADE'
+  sourceKey: 'id'
 } )
 
-headDoctors.belongsTo(departments,{ foreignKey:'doctor_id', targetKey:'id'})
-
+//headdoctors-departments
 headDoctors.belongsTo(departments,{ 
   foreignKey:{
-    name: 'department_id',
-    type:Sequelize.INTEGER,
+    name: 'department_name',
+    type:Sequelize.STRING,
     allowNull: false,
     unique:true,
     primaryKey: 'head_doctor'
-  }, targetKey:'id',
+  }, targetKey:'name',
   onDelete: 'CASCADE'
 })
 
 departments.hasOne(headDoctors,{
-  foreignKey:  'department_id', 
-  sourceKey: 'id'
+  foreignKey:  'department_name', 
+  sourceKey: 'name'
 })
 
-
-const nurses =require('./nurses.js')(sequelize,Sequelize)
-
-doctors.hasMany(nurses,{
+//many to many doctors nurses
+doctors.belongsToMany(nurses,{
+  through: doctorsNurses,
   foreignKey: {
-    name: 'doctor_id',
-    type:Sequelize.INTEGER,
-    allowNull: false
-  }, 
-  sourceKey: 'id',
-  onDelete: 'CASCADE'
-})
-
-nurses.belongsTo(doctors,{foreignKey:'doctor_id', targetKey:'id'})
-
-const nursesPhones =require('./nursesPhones.js')(sequelize,Sequelize)
-
-nurses.hasMany(nursesPhones, {
-  foreignKey: {
-    name: 'nurse_id',
-    type:Sequelize.INTEGER,
+    name: 'doctor_id', 
     allowNull: false,
-    primaryKey: 'nurse_phone'
-  }, sourceKey: 'id',
-  onDelete: "CASCADE"
+    primaryKey:'dn'
+    
+  }
 })
-nursesPhones.belongsTo(nurses, {foreignKey:'nurse_id', targetKey:'id'})
 
-const patients =require('./patients.js')(sequelize,Sequelize)
-const patientsPhones=require('./patientsPhones.js')(sequelize,Sequelize)
-
-patients.hasMany(patientsPhones, {
+nurses.belongsToMany(doctors,{
+  through: doctorsNurses,
   foreignKey: {
-    name: 'patient_id',
-    type:Sequelize.INTEGER,
+    name: 'nurse_id', 
     allowNull: false,
-    primaryKey: 'patient_phone'
-  }, 
-  sourceKey: 'id',
-  onDelete: "CASCADE"
+    primaryKey:'dn'
+    
+  }
 })
-patientsPhones.belongsTo(patients, {foreignKey:'patient_id', targetKey:'id'})
 
-const doctorsPatients =require('./doctorsPatients.js')(sequelize,Sequelize)
+
+//many to many treatments
 doctors.belongsToMany(patients, {
-  through:doctorsPatients,
-  allowNull: false,
-  primaryKey: 'doctor_patient'}
+  through: treatments,
+  foreignKey:{
+  name: 'doctor_id',
+  allowNull: false ,
+  unique: 'h'} 
+}
 )
 
 patients.belongsToMany(doctors, {
-  through:doctorsPatients,
-  allowNull: false,
-  primaryKey: 'doctor_patient'}
-)
-
-const treatments =require('./treatments.js')(sequelize,Sequelize)
-
-patients.hasMany(treatments, {
-  foreignKey: {
+  through:treatments,
+  foreignKey:{
     name: 'patient_id',
-    type:Sequelize.INTEGER,
-    allowNull: false,
-    unique: 'nurse_patient_date'
-  }, sourceKey: 'id'
-})
-treatments.belongsTo(patients, {foreignKey:'patient_id', targetKey:'id'})
-
-nurses.hasMany(treatments, {
-  foreignKey: {
-    name: 'nurse_id',
-    type:Sequelize.INTEGER,
-    allowNull: false,
-    unique: 'nurse_patient_date'
-  }, sourceKey: 'id'
-})
-treatments.belongsTo(nurses, {foreignKey:'patient_id', targetKey:'id'})
+    allowNull: false ,
+    unique: 'h'} 
+  }
+)
 
 
 
@@ -164,19 +111,14 @@ const users=require('./users.js')(sequelize,Sequelize, doctors)
 
 //sequelize.sync({force:true}).then(()=>console.log("Tebles are Created"))
 
-
 module.exports={
     sequelize,
     departments,
-    departmentsPhones,
     doctors,
-    doctorsPhones,
     headDoctors,
     nurses,
-    nursesPhones,
+    doctorsNurses,
     patients,
-    patientsPhones,
-    doctorsPatients,
     treatments,
     users
 }
