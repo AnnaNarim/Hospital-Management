@@ -37,16 +37,11 @@ module.exports = (sequelize, DataTypes, doctors) => {
         apartmentNumber:{
             type: DataTypes.STRING
         },
-        // doctor_id: {
-        //     references: {
-        //         model: doctors,
-        //         key: 'id'
-        //     },
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false 
-        //     //on Delete cascade petq chi qani vor ete doctorin hanecin, xi nurserin el hanel
-        // }
-    },
+        phoneNumber:{
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+    }},
         {
         freezeTableName:true,
         timestamps: false}

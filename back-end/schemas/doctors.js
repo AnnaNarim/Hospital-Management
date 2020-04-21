@@ -40,20 +40,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         roomNumber:{
             type: DataTypes.STRING,
+            allowNull: false
+        },
+        phoneNumber:{
+            type: DataTypes.STRING,
             allowNull: false,
-            unique: 'location'
+            unique: true
         }
-        //,
-        //chem avelacnum onDelete Cascade, vorovhetev ete deprtment@ pakum en petq chi
-        //doctornernel hanel, aranc notification
-        // department_id: {
-        //     references: {
-        //         model: departments,
-        //         key: 'id'
-        //     },
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false
-        // }
     },
         {
            freezeTableName: true,

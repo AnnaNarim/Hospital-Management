@@ -1,5 +1,5 @@
 const Sequelize=require('sequelize')
-const users=require('../schemas/db').users
+const users=require('../db').users
 const jwt=require('jsonwebtoken')
 require("dotenv").config();
 const JWT_KEY = process.env.JWT_KEY;

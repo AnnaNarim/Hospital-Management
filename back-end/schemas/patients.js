@@ -32,7 +32,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         apartmentNumber:{
             type: DataTypes.STRING
-        }},
+        },
+        phoneNumber:{
+            type: DataTypes.STRING, 
+            allowNull: false,
+            unique: true
+        }
+    },
         {
         timestamps: false
         }
