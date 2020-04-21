@@ -19,6 +19,7 @@ const routes = (
 
       <ProtectedRoute exact path="/home" component={Home} />
       <ProtectedRoute exact path="/my/nurse" component={Nurses} />
+      <ProtectedRoute exact path="/my/nurse/:nurseId" component={Nurses} />
 
       <PublicRoute path="/login" component={Login} />
 
