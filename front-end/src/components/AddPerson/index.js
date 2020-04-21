@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Header, Button, Input, Dropdown, TextArea, Form } from 'semantic-ui-react';
+import { Modal, Header, Button, Input, Dropdown, TextArea, Form, Image } from 'semantic-ui-react';
 import { styleOptions } from '../../styleOptions';
 import './AddPerson.css';
 
@@ -15,6 +15,11 @@ class LogIn extends Component {
         {id: 3, name: "Oncology", doctors: 6, nurses: 2, patients: 20},
         {id: 3, name: "Rheumatology", doctors: 3, nurses: 1, patients: 15}
       ],
+      patients: [
+        {id: 1, email: "asd@asd.asda"},
+        {id: 2, email: "aaaaaaa@asd.asda"},
+        {id: 3, email: "qqqsd@asd.asda"},
+      ],
       nurses: [
         {id: 1, name: "Anna Smith"},
         {id: 2, name: "Vivian John"},
@@ -22,6 +27,7 @@ class LogIn extends Component {
       ],
       valueDepart: '',
       valueNurse: '',
+      valuePatient: '',
       firstName: '',
       lastName: '',
       phone: '',
@@ -98,43 +104,37 @@ class LogIn extends Component {
   }
 
   getPatientModal() {
-    const { valueDepart, firstName, lastName, phone, email, treat } = this.state;
-    const { addLoading, type } = this.props;
-    const disabled = !(firstName && lastName && phone && email && treat && valueDepart)
-    console.log('dis', disabled, firstName)
+    const { valuePatient, date, treat, patients } = this.state;
+    const { addLoading, type, patientsLoading } = this.props;
+    const disabled = !(valuePatient && treat && date)
+
+    const onlyPatientNames = patients.map(item => {
+      return   {
+        key: item.email,
+        text: item.email,
+        value: item.id
+      }
+    });
+
     return (
       <Modal.Description>
-        {this.getDepartmentsNames()}
-        <p>First Name</p>
-        <Input
-          name='firstName'
-          value={firstName}
-          placeholder='First Name...'
+        <p>Find by email</p>
+        <Dropdown
+          placeholder={`Select ${type}`}
           fluid
-          onChange={(e, data) => this.handleInputChange(e, data)}
+          search
+          selection
+          options={onlyPatientNames}
+          loading={patientsLoading}
+          value={valuePatient}
+          disabled={!disabled}
+          onChange={(e, item) => this.handleChange(e, item, 'valuePatient')}
         />
-        <p>Last Name</p>
+        <p>Date</p>
         <Input
-          placeholder='Last Name...'
-          fluid
-          name='lastName'
-          value={lastName}
-          onChange={(e, data) => this.handleInputChange(e, data)}
-        />
-        <p>Phone</p>
-        <Input
-          placeholder='Phone...'
-          fluid
-          name='phone'
-          value={phone}
-          onChange={(e, data) => this.handleInputChange(e, data)}
-        />
-        <p>Email</p>
-        <Input
-          placeholder='Email...'
-          fluid
-          name='email'
-          value={email}
+          placeholder='24/12/2020...'
+          name='date'
+          value={date}
           onChange={(e, data) => this.handleInputChange(e, data)}
         />
         <p>Treatment</p>
