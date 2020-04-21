@@ -2,43 +2,53 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LeftSideList } from 'evermut';
 import { Header, Image, Divider, Button, Icon } from 'semantic-ui-react';
-import './Nurses.css';
+import '../Nurses/Nurses.css';
+import './Patients.css';
 
-import nursePic from '../../static/nurse1.jpg';
+import patientPic from '../../static/patient1.jpg';
 
-class Nurses extends Component {
+class Patients extends Component {
 	constructor() {
 		super();
 
 		this.state = {
 			list: [
-        {id: 1, name: "Jade Woods"},
-        {id: 2, name: "Sam Woo"},
+        {id: 1, name: "Betty Smith"},
+        {id: 2, name: "Poghos Petros"},
       ],
       singlePerson: {
         id: 1,
-        name: "Jade Woods",
-        img: nursePic,
+        name: "Betty Smith",
+        img: patientPic,
         phone: '+12312312',
-        email: 'jade.woods@gmail.com',
+        email: 'betty.smith@gmail.com',
         department: 'Cardiology',
-        patients: 12,
-        tasks: 3,
+        treatments: 3,
       },
-      selected: 1 // id of a nurse that is selected
+      singlePersonTreatments: [
+        {
+          date: '01/03/2020',
+          treatment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+        },
+        {
+          date: '05/02/2020',
+          treatment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        },
+      ],
+      selected: 1 // id of a patient that is selected
 		}
 	}
 
   componentDidMount() {
-    const { nurseId } = this.props.match.params;
+    const { patientId } = this.props.match.params;
 
-    // nurseId && this._getNurse(nurseId);
-    // if (!this.props.nurses.length && !this.props.nursesLoading) {
-    //   this.props._getMyNurses();
+    // patientId && this._getPatient(patientId);
+    // if (!this.props.patients.length && !this.props.patientLoading) {
+    //   this.props._getMyPatients();
     // }
 
-    if(!nurseId) {
-      this.props.history.push(`/my/nurse/${1}`);
+    if(!patientId) {
+      this.props.history.push(`/my/patient/${1}`);
     }
   }
 
@@ -46,11 +56,11 @@ class Nurses extends Component {
     // const { match } = prevProps;
     // const { params } = this.props.match;
 
-    // if (match.params.nurseId !== params.nurseId) {
-    //   this._getNurse(nurseId);
+    // if (match.params.patientId !== params.patientId) {
+    //   this._getPatient(patientId);
 
-    // if(prevProps.nursesLoading && !this.props.nursesLoading && this.props.nurses.length) {
-    //   this.props.history.push(`my/nurse/${this.props.nurses[0].id}`);
+    // if(prevProps.patientLoading && !this.props.patientLoading && this.props.patients.length) {
+    //   this.props.history.push(`my/patient/${this.props.patients[0].id}`);
     // }
   }
 
@@ -62,7 +72,7 @@ class Nurses extends Component {
 
   selectItem(id) {
     this.setState({ selected: id });
-    this.props.history.push(`/my/nurse/${id}`);
+    this.props.history.push(`/my/patient/${id}`);
     //call the get single person info action by its id
   }
 
@@ -84,16 +94,20 @@ class Nurses extends Component {
     );
   }
 
-  getHospitalInfo() {
-    const { singlePerson } = this.state;
-    const { department, patients, tasks } = singlePerson;
+  getTreatmentsInfo() {
+    const { singlePersonTreatments } = this.state;
 
     return (
       <div className='personal-info'>
-        <div><Icon name='building' /> {department}</div>
-        <div><Icon name='tag' /> Nurse</div>
-        <div><Icon name='bed' /> {patients}</div>
-        <div><Icon name='tasks' /> {tasks}</div>
+        {singlePersonTreatments.map((item, index) => {
+          const { date, treatment } = item;
+          return (
+            <div className='treatments' key={`patient-treat-${index}`}>
+              <div><Icon name='calendar alternate' /> {date}</div>
+              <div>{treatment}</div>
+            </div>
+          );
+        }) || null}
       </div>
     );
   }
@@ -117,10 +131,10 @@ class Nurses extends Component {
         </Header>
         {this.getPeronalInfo()}
         <Header as='h3'>
-          <Icon name='hospital outline' />
-          Hospital Info
+          <Icon name='treatment' />
+          Treatments
         </Header>
-        {this.getHospitalInfo()}
+        {this.getTreatmentsInfo()}
     	</div>
     ) : null;
   }
@@ -156,4 +170,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Nurses);
+export default connect(mapStateToProps, mapDispatchToProps)(Patients);

@@ -1,6 +1,5 @@
-.nurses {
+.component {
 	display: flex;
-	height: 100%;
 }
 
 .single-person-content {

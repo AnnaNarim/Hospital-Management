@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Header, Button, Input, Dropdown } from 'semantic-ui-react';
+import { Modal, Header, Button, Input, Dropdown, TextArea, Form } from 'semantic-ui-react';
 import { styleOptions } from '../../styleOptions';
 import './AddPerson.css';
 
@@ -21,7 +21,12 @@ class LogIn extends Component {
         {id: 3, name: "Sam Pitt"},
       ],
       valueDepart: '',
-      valueNurse: ''
+      valueNurse: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      email: '',
+      treat: '',
     }
   }
   clicked() {
@@ -42,65 +47,154 @@ class LogIn extends Component {
     this.clicked()
   }
 
-  content(type) {
+  getNurseModal() {
     const { departments, nurses, valueDepart, valueNurse } = this.state;
-    const { nursesLoading, addLoading } = this.props;
+    const { nursesLoading, addLoading, type } = this.props;
 
+    const onlyDepNames = departments.map(item => {
+      return   {
+        key: item.name,
+        text: item.name,
+        value: item.id
+      }
+    });
+
+    const onlyNursesNames = nurses.map(item => {
+      return   {
+        key: item.name,
+        text: item.name,
+        value: item.id
+      }
+    });
+
+    return (
+      <Modal.Description>
+        {this.getDepartmentsNames()}
+        <p> Select the {type}.</p>
+        <Dropdown
+          placeholder={`Select ${type}`}
+          fluid
+          search
+          selection
+          options={onlyNursesNames}
+          loading={nursesLoading}
+          value={valueNurse}
+          disabled={!valueDepart}
+          onChange={(e, item) => this.handleChange(e, item, 'valueNurse')}
+        />
+        <Button
+          primary
+          onClick={() => this._add()}
+          disabled={!(valueNurse && valueDepart)}
+          loading={addLoading}
+        >Add</Button>
+        <Button onClick={() => this.clicked()}>Cancel</Button>
+      </Modal.Description>
+    );
+  }
+
+  handleInputChange = (e, data) => {
+    this.setState({ [data['name']]: data.value })
+  }
+
+  getPatientModal() {
+    const { valueDepart, firstName, lastName, phone, email, treat } = this.state;
+    const { addLoading, type } = this.props;
+    const disabled = !(firstName && lastName && phone && email && treat && valueDepart)
+    console.log('dis', disabled, firstName)
+    return (
+      <Modal.Description>
+        {this.getDepartmentsNames()}
+        <p>First Name</p>
+        <Input
+          name='firstName'
+          value={firstName}
+          placeholder='First Name...'
+          fluid
+          onChange={(e, data) => this.handleInputChange(e, data)}
+        />
+        <p>Last Name</p>
+        <Input
+          placeholder='Last Name...'
+          fluid
+          name='lastName'
+          value={lastName}
+          onChange={(e, data) => this.handleInputChange(e, data)}
+        />
+        <p>Phone</p>
+        <Input
+          placeholder='Phone...'
+          fluid
+          name='phone'
+          value={phone}
+          onChange={(e, data) => this.handleInputChange(e, data)}
+        />
+        <p>Email</p>
+        <Input
+          placeholder='Email...'
+          fluid
+          name='email'
+          value={email}
+          onChange={(e, data) => this.handleInputChange(e, data)}
+        />
+        <p>Treatment</p>
+        <Form>
+          <TextArea
+            placeholder='About treatment...'
+            name='treat'
+            value={treat}
+            onChange={(e, data) => this.handleInputChange(e, data)}
+          />
+        </Form>
+        <Button
+          primary
+          onClick={() => this._add()}
+          disabled={disabled}
+          loading={addLoading}
+        >Add</Button>
+        <Button onClick={() => this.clicked()}>Cancel</Button>
+      </Modal.Description>
+    );
+  }
+
+  content(type) {
     switch(type) {
       case 'nurse':
-        const onlyDepNames = departments.map(item => {
-          return   {
-            key: item.name,
-            text: item.name,
-            value: item.id
-          }
-        });
+        return this.getNurseModal();
 
-        const onlyNursesNames = nurses.map(item => {
-          return   {
-            key: item.name,
-            text: item.name,
-            value: item.id
-          }
-        });
-
-        console.log('value', valueDepart, valueNurse)
-        return (
-          <Modal.Description>
-            <p> Choose the department to where the {type} belongs.</p>
-            <Dropdown
-              placeholder='Select Department'
-              fluid
-              selection
-              options={onlyDepNames}
-              onChange={(e, item) => this.handleChange(e, item, 'valueDepart')}
-              value={valueDepart}
-            />
-            <p> Select the {type}.</p>
-            <Dropdown
-              placeholder={`Select ${type}`}
-              fluid
-              search
-              selection
-              options={onlyNursesNames}
-              loading={nursesLoading}
-              value={valueNurse}
-              disabled={!valueDepart}
-              onChange={(e, item) => this.handleChange(e, item, 'valueNurse')}
-            />
-            <Button
-              primary
-              onClick={() => this._add()}
-              disabled={!(valueNurse && valueDepart)}
-              loading={addLoading}
-            >Add</Button>
-            <Button onClick={() => this.clicked()}>Cancel</Button>
-          </Modal.Description>
-        );
+      case 'patient':
+        return this.getPatientModal();
 
       default:
         return null;
     }
+  }
+
+  getDepartmentsNames() {
+    const { departments, valueDepart } = this.state;
+    const { type } = this.props;
+
+    const onlyDepNames = departments.map(item => {
+      return   {
+        key: item.name,
+        text: item.name,
+        value: item.id
+      }
+    });
+
+    return (
+      <>
+        <p> Choose the department to where the {type} belongs.</p>
+        <Dropdown
+          placeholder='Select Department'
+          fluid
+          selection
+          options={onlyDepNames}
+          onChange={(e, item) => this.handleChange(e, item, 'valueDepart')}
+          value={valueDepart}
+        />
+      </>
+    );
   }
 
   render () {

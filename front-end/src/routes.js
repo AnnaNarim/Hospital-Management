@@ -9,7 +9,7 @@ import Login from './containers/Login';
 // import SignUp from './containers/SignUp';
 import Home from './containers/Home';
 import Nurses from './containers/Nurses';
-// import Patients from './containers/Patients';
+import Patients from './containers/Patients';
 import NotFound from './containers/NotFound';
 
 const routes = (
@@ -20,6 +20,8 @@ const routes = (
       <ProtectedRoute exact path="/home" component={Home} />
       <ProtectedRoute exact path="/my/nurse" component={Nurses} />
       <ProtectedRoute exact path="/my/nurse/:nurseId" component={Nurses} />
+      <ProtectedRoute exact path="/my/patient" component={Patients} />
+      <ProtectedRoute exact path="/my/patient/:patientId" component={Patients} />
 
       <PublicRoute path="/login" component={Login} />
 
