@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LeftSideList } from 'evermut';
-import { Header, Image, Divider, Button, Icon } from 'semantic-ui-react';
+import { Header, Image, Divider, Button, Icon, Modal } from 'semantic-ui-react';
 import './Nurses.css';
 
 import nursePic from '../../static/nurse1.jpg';
@@ -25,7 +25,8 @@ class Nurses extends Component {
         patients: 12,
         tasks: 3,
       },
-      selected: 1 // id of a nurse that is selected
+      selected: 1, // id of a nurse that is selected
+      openDelete: false,
 		}
 	}
 
@@ -98,6 +99,36 @@ class Nurses extends Component {
     );
   }
 
+  handleDeleteModal() {
+    const { openDelete } = this.state;
+
+    this.setState({ openDelete: !openDelete });
+  }
+
+  _delete() {
+    // 
+    console.log('delete nurse')
+  }
+
+  getDeleteModal() {
+    const { openDelete } = this.state;
+    return (
+      <Modal open={openDelete} size='tiny' onClose={() => this.handleDeleteModal()}>
+        <Modal.Header>Delete the nurse. </Modal.Header>
+        <Modal.Content>
+          <Modal.Description>
+            <div>Are you sure you want to remove this nurse from your list?</div>
+            <Button
+              color='red'
+              onClick={() => this._delete()}
+            >Delete</Button>
+            <Button onClick={() => this.handleDeleteModal()}>Cancel</Button>
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
+    );
+  }
+
   getContent() {
     const { singlePerson, selected } = this.state;
 
@@ -108,8 +139,9 @@ class Nurses extends Component {
       		  <Image src={singlePerson.img} size='small' />
             <Header as='h2'>{singlePerson.name}</Header>
           </div>
-          <Button basic color='red' content='Delete' />
+          <Button basic color='red' content='Delete' onClick={() => this.handleDeleteModal()} />
         </div>
+        {this.getDeleteModal()}
         <Divider />
         <Header as='h3'>
           <Icon name='user circle' />
