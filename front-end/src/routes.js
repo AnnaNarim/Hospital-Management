@@ -11,6 +11,7 @@ import Home from './containers/Home';
 import Nurses from './containers/Nurses';
 import Patients from './containers/Patients';
 import DepartmentDoctors from './containers/DepartmentDoctors';
+import DepartmentNurses from './containers/DepartmentNurses';
 import NotFound from './containers/NotFound';
 
 const routes = (
@@ -27,6 +28,8 @@ const routes = (
 
       <ProtectedRoute exact path="/departments/:departmentId/doctors" component={DepartmentDoctors} />
       <ProtectedRoute exact path="/departments/:departmentId/doctors/:doctorId" component={DepartmentDoctors} />
+      <ProtectedRoute exact path="/departments/:departmentId/nurses" component={DepartmentNurses} />
+      <ProtectedRoute exact path="/departments/:departmentId/nurses/:nurseId" component={DepartmentNurses} />
 
       <PublicRoute path="/login" component={Login} />
 
