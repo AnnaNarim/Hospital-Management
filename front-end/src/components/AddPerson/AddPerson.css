@@ -1,0 +1,11 @@
+.description p {
+	margin-top: 15px;
+}
+
+.description p:first-child {
+	margin-top: 0;
+}
+
+.description button {
+	margin-top: 15px!important;
+}

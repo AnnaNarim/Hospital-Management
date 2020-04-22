@@ -21,7 +21,8 @@
 	height: 150px!important;
 }
 
-.dept-card a {
+.dept-card .header {
+	margin-bottom: 15px;
 }
 
 .extra div:first-child {
@@ -34,9 +35,17 @@
 	justify-content: space-around;
 }
 
-.description {
+.description div {
+	margin-bottom: 7.5px;
+}
+
+.description div:first-child {
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
+}
+
+.description div:last-child {
+	margin-bottom: 0;
 }
 
 .myInfo-cards {
@@ -51,6 +60,8 @@
 	margin-bottom: 0!important;
 }
 
-.divider h4{
-	color: #163C7D!important;
+.myInfo-cards .description {
+	display: flex;
+	justify-content: space-between;
 }
+

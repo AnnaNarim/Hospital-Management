@@ -1,0 +1,9 @@
+.treatments {
+	padding: 15px;
+	border: 1px solid rgba(34,36,38,.15);
+	margin-bottom: 15px;
+}
+
+.treatments div:first-child {
+	margin-bottom: 7.5px;
+}
