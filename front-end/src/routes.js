@@ -10,6 +10,7 @@ import Login from './containers/Login';
 import Home from './containers/Home';
 import Nurses from './containers/Nurses';
 import Patients from './containers/Patients';
+import DepartmentDoctors from './containers/DepartmentDoctors';
 import NotFound from './containers/NotFound';
 
 const routes = (
@@ -18,10 +19,14 @@ const routes = (
       <Redirect exact from="/" to="/home" />
 
       <ProtectedRoute exact path="/home" component={Home} />
+
       <ProtectedRoute exact path="/my/nurse" component={Nurses} />
       <ProtectedRoute exact path="/my/nurse/:nurseId" component={Nurses} />
       <ProtectedRoute exact path="/my/patient" component={Patients} />
       <ProtectedRoute exact path="/my/patient/:patientId" component={Patients} />
+
+      <ProtectedRoute exact path="/departments/:departmentId/doctors" component={DepartmentDoctors} />
+      <ProtectedRoute exact path="/departments/:departmentId/doctors/:doctorId" component={DepartmentDoctors} />
 
       <PublicRoute path="/login" component={Login} />
 
