@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LeftSideList } from 'evermut';
 import { Header, Image, Divider, Icon } from 'semantic-ui-react';
-// import './Nurses.css';
+import '../Nurses/Nurses.css';
 
 import doctor1 from '../../static/doctor1.jpg';
 
