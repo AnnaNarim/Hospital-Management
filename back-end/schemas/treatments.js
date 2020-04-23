@@ -4,9 +4,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT
         },
         start_date:{
-            type:DataTypes.DATE,
-            unique:'h',
-            allowNull:false,
+            type:DataTypes.DATEONLY, 
+            allowNull: false
+
         }
     },{
         timestamps: false

@@ -22,4 +22,10 @@ class PasswordIncorrect extends Error {
     }
 }
 
-module.exports = {DoctorNotFound, UserAlreadyExists,EmailIsIncorrect, PasswordIncorrect}
+class IncorrectNurse extends Error {
+    constructor() {
+        super('Selected person already was your nurse!');
+    }
+}
+
+module.exports = {DoctorNotFound, UserAlreadyExists,EmailIsIncorrect, PasswordIncorrect,IncorrectNurse}
