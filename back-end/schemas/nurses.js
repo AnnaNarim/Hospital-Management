@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes, doctors) => {
             allowNull: false 
         },
         DOB:{
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false 
         },
         gender:{

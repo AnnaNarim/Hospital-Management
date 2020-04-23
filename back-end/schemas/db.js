@@ -1,19 +1,18 @@
 const Sequelize = require('sequelize')
-//const sequelizeTransforms = require('sequelize-transforms');
-
 
 const sequelize= new Sequelize('hospital2', 'root', 'silva123', {
   host: 'localhost',
   dialect: 'mysql', //|'sqlite'|'postgres'|'mssql'
-}); //{query:{raw:true}});
-const queryInterface = sequelize.getQueryInterface()
+  query:{raw:true}
+}); 
+
 //test the connection
 // sequelize.authenticate().then(() => {
 //   console.log('Connection has been established successfully.');
 // }).catch(err => {
 //   console.error('Unable to connect to the database:', err);
 // })
-//sequelizeTransforms(sequelize)
+
 const departments =require('./departments.js')(sequelize,Sequelize)
 const doctors =require('./doctors.js')(sequelize,Sequelize)
 const headDoctors =require('./headDoctors.js')(sequelize,Sequelize)
@@ -47,7 +46,7 @@ doctors.hasOne(headDoctors,{
   sourceKey: 'id'
 } )
 
-//headdoctors-departments
+//headDoctors-departments
 headDoctors.belongsTo(departments,{ 
   foreignKey:{
     name: 'department_name',
@@ -65,46 +64,40 @@ departments.hasOne(headDoctors,{
 })
 
 //many to many doctors nurses
-doctors.belongsToMany(nurses,{
-  through: doctorsNurses,
+doctors.hasMany(doctorsNurses, {
   foreignKey: {
-    name: 'doctor_id', 
+    name: 'doctor_id',
     allowNull: false,
-    primaryKey:'dn'
-    
-  }
-})
+    primaryKey: 't'
+  }, sourceKey:'id'})
+doctorsNurses.belongsTo(doctors, {foreignKey:'doctor_id', targetKey:'id'})
 
-nurses.belongsToMany(doctors,{
-  through: doctorsNurses,
+nurses.hasMany(doctorsNurses, {
   foreignKey: {
-    name: 'nurse_id', 
+    name: 'nurse_id',
     allowNull: false,
-    primaryKey:'dn'
-    
-  }
-})
+    primaryKey: 't',
+  }, sourceKey:'id'})
+doctorsNurses.belongsTo(nurses, {foreignKey:'nurse_id', targetKey:'id'})
+doctorsNurses.removeAttribute('id');
 
+//many-to-many doctors treatments
+doctors.hasMany(treatments, {
+  foreignKey: {
+    name: 'doctor_id',
+    allowNull: false,
+    primaryKey:'h',
+  }, sourceKey:'id'})
+treatments.belongsTo(doctors, {foreignKey:'doctor_id', targetKey:'id'})
 
-//many to many treatments
-doctors.belongsToMany(patients, {
-  through: treatments,
-  foreignKey:{
-  name: 'doctor_id',
-  allowNull: false ,
-  unique: 'h'} 
-}
-)
-
-patients.belongsToMany(doctors, {
-  through:treatments,
-  foreignKey:{
+patients.hasMany(treatments, {
+  foreignKey: {
     name: 'patient_id',
-    allowNull: false ,
-    unique: 'h'} 
-  }
-)
-
+    allowNull: false,
+    primaryKey: 'h'
+  }, sourceKey:'id'})
+treatments.belongsTo(patients, {foreignKey:'patient_id', targetKey:'id'})
+treatments.removeAttribute('id');
 
 
 const users=require('./users.js')(sequelize,Sequelize, doctors)

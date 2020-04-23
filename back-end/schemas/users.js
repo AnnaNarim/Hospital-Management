@@ -17,8 +17,7 @@ module.exports = (sequelize, DataTypes, doctors) => {
     },{
         freezeTableName: true ,
         timestamps: false
-    }
-    );
+    });
     
     users.CreateNewUser = async function(user) {
            
@@ -38,7 +37,7 @@ module.exports = (sequelize, DataTypes, doctors) => {
         // //     return sequelize.Promise.reject("not modified");
         // //   }
 
-        //if you are let you create account
+        //if selected islet you create account
         const SALT_INIT = 5;
         const salt = bcrypt.genSaltSync(SALT_INIT)
         const hashedPassword =bcrypt.hashSync(user.password, salt)
@@ -49,12 +48,12 @@ module.exports = (sequelize, DataTypes, doctors) => {
         return 1
     }
 
-    users.findUserByEmail = function (user_email) {
-        return  users.findOne({where: {email: user_email}})
+    users.findUserByEmail =  function (user_email) {
+        return  users.findAll({where:{ email: user_email}})
     }
                
     users.prototype.comparePassword =  function (password) {  
-        return bcrypt.compareSync(password, this.password);
+        return  bcrypt.compareSync(password, this.password);
     }
     
     return users

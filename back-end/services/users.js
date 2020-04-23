@@ -1,5 +1,5 @@
 const Sequelize=require('sequelize')
-const users=require('../db').users
+const users=require('../schemas/db').users
 const jwt=require('jsonwebtoken')
 require("dotenv").config();
 const JWT_KEY = process.env.JWT_KEY;
@@ -23,7 +23,8 @@ module.exports = {
 
         if(!user){ 
             throw new  EmailIsIncorrect();
-        }
+        } 
+        
          if(!user.comparePassword(password)){ 
              throw new PasswordIncorrect();
          }

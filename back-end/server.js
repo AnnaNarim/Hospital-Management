@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const Sequelize=require('sequelize')
 const users =require('./routes/users')
+const home=require('./routes/home')
 const cors = require('cors');
 const http = require('http').Server(app);
 const passport = require('passport');
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use('/users', users);
+app.use('/home', home);
 
 app.use((err, req, res, next) => {
     console.log(`Error on server! => ${err.message}`);
