@@ -28,4 +28,9 @@ class IncorrectNurse extends Error {
     }
 }
 
-module.exports = {DoctorNotFound, UserAlreadyExists,EmailIsIncorrect, PasswordIncorrect,IncorrectNurse}
+module.exports = {
+    DoctorNotFound,
+     UserAlreadyExists,
+     EmailIsIncorrect, 
+     PasswordIncorrect,
+     IncorrectNurse}

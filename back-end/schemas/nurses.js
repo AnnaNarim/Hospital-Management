@@ -1,7 +1,6 @@
 module.exports = (sequelize, DataTypes, doctors) => {
 //no need for room because we can find by doctor
     const nurses= sequelize.define('nurses',{
-    //primary key is auto generated id
         firstName:{
             type: DataTypes.STRING,
             allowNull: false 

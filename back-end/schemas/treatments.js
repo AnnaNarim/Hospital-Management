@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
         start_date:{
             type:DataTypes.DATEONLY, 
             allowNull: false
-
         }
     },{
         timestamps: false
