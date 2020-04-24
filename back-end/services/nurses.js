@@ -61,10 +61,5 @@ module.exports={
         })
 
         return nursesMails
-    },
-
-    addNurse: (mail)=>{
-
     }
-
 }
