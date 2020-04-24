@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes, doctors) => {
         timestamps: false
     });
     
-    users.CreateNewUser = async function(user) {
+    users.CreateNewUser = async function(new_user) {
            
         //select emails from doctors table
         let emails = await doctors.findAll({
@@ -30,26 +30,28 @@ module.exports = (sequelize, DataTypes, doctors) => {
         emails = emails.map(element=>element.email)
         
         //look wheater you are a doctor
-        if(!Array.from(emails).find(element=> element===user.email)) {
+        if(!Array.from(emails).find(element=> element===new_user.email)) {
             throw new DoctorNotFound();
         }
         // // if (!user.changed('password')) {
         // //     return sequelize.Promise.reject("not modified");
         // //   }
 
-        //if selected islet you create account
+        //if selected is let you create account
         const SALT_INIT = 5;
         const salt = bcrypt.genSaltSync(SALT_INIT)
-        const hashedPassword =bcrypt.hashSync(user.password, salt)
-        user.password =hashedPassword;
+        const hashedPassword =bcrypt.hashSync(new_user.password, salt)
+        new_user.password =hashedPassword;
         
-        users.create({email: user.email, password: user.password, position:'doctor'}).then(()=>console.log('Created'))
+        users.create({email: new_user.email, password: new_user.password}).then(()=>console.log('Created'))
         
         return 1
     }
 
-    users.findUserByEmail =  function (user_email) {
-        return  users.findAll({where:{ email: user_email}})
+    users.findUserByEmail = async function (user_email) {
+        let user = await users.findOne({where:{ email: user_email}})
+        user= users.build(user)
+        return user
     }
                
     users.prototype.comparePassword =  function (password) {  
