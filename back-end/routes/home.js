@@ -41,6 +41,7 @@ router.get('/myNurses/view/:id', passport.authenticate('jwt', {session:false}) ,
   
 }))
 
+//deleteing personal nurse
 router.post('/myNurses/delete/:nurseid', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doct_id=await doctors.getDoctorID(req.user.email)
     doctors.deleteNurse(doct_id, req.params.nurseid)
@@ -88,6 +89,7 @@ router.post('/myPatients/add/:patientId', passport.authenticate('jwt', {session:
     res.status(201).send('Treatment is added!')
 })) 
 
+//viewing doctors in specific department
 router.get('/departments/:name/doctors', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doctorsInDepartment =await departments.getDoctorsInDepartment(req.params.name)
     res.status(200).json(doctorsInDepartment)
@@ -105,6 +107,7 @@ router.get('/departments/doctors/:id', passport.authenticate('jwt', {session:fal
     
 }))
 
+//viewing nurses in specific department
 router.get('/departments/:name/nurses', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const nursesInDepartment =await departments.getNursesInDepartment(req.params.name)
     res.status(200).json(nursesInDepartment)
@@ -120,11 +123,11 @@ router.get('/departments/nurses/:id', passport.authenticate('jwt', {session:fals
     
 }))
 
-
-router.get('/test',asyncHandler(async (req,res)=>{
-    doctors.addNurse(2,3)
-    res.status(201).send('Nurse is added!')
-}))
+//my testing router
+// router.get('/test',asyncHandler(async (req,res)=>{
+//     doctors.addNurse(2,3)
+//     res.status(201).send('Nurse is added!')
+// }))
 
 module.exports=router
 
