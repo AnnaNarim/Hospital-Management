@@ -21,7 +21,7 @@ const doctorsNurses= require('./doctorsNurses')(sequelize,Sequelize)
 const patients =require('./patients.js')(sequelize,Sequelize)
 const treatments =require('./treatments.js')(sequelize,Sequelize)
 
-// One to Many: Doctors-Departments 
+// One-to-Many: Doctors-Departments 
  departments.hasMany(doctors, {
   foreignKey: {
     name: 'department_name',
@@ -59,7 +59,7 @@ headDoctors.belongsTo(departments,{
 })
 
 departments.hasOne(headDoctors,{
-  foreignKey:  'department_name', 
+  foreignKey: 'department_name', 
   sourceKey: 'name'
 })
 
