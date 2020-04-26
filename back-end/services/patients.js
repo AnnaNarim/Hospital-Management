@@ -6,11 +6,11 @@ const Op=Sequelize.Op
 const _=require('lodash')
 
 module.exports={
-     getMyPatients: async (doct_id)=>{
+     getMyPatients: async (doctId)=>{
 
          let PatientsIDs= await treatments.findAll({
              attributes: [Sequelize.fn('DISTINCT', Sequelize.col('patient_id')), 'patient_id'],
-             where: { doctor_id: doct_id}
+             where: { doctor_id: doctId}
          })
 
          PatientsIDs = PatientsIDs.map(a => a.patient_id)
@@ -42,7 +42,7 @@ module.exports={
     },
     
 
-    listingDoctorsAndTreatmentsOfPatien: async(patient) =>
+    listingDoctorsAndTreatmentsOfPatient: async(patient) =>
     {
         let doctorsTreatingID = await treatments.findAll({
             attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('doctor_id')), 'doctor_id']],

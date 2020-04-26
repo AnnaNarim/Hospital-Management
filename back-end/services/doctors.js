@@ -7,76 +7,76 @@ const Op=Sequelize.Op
 
 module.exports={
 
-    getDoctorID: (doct_email)=>{
+    getDoctorID: (doctEmail)=>{
         return doctors.findAll({
             attributes:[ 'id'],
             where: {
-                email: doct_email
+                email: doctEmail
             },
             raw:true
         })
 
     },
     
-    getDoctorsPersonalInfo: (doct_id)=>{
+    getDoctorsPersonalInfo: (doctId)=>{
         return doctors.findAll({
             attributes: { exclude: ['id', 'gender']},
-            where: { id: doct_id},
+            where: { id: doctId},
             raw:true
         })
 
     },
   
-    numOfNursesOfDoctor: (doct_id)=>{
+    numOfNursesOfDoctor: (doctId)=>{
         return doctorsNurses.count({
             where: {
-                doctor_id: doct_id
+                doctor_id: doctId
             }
         })
     },
 
-    numOfPatientsOfDoctor: (doct_id)=>{
+    numOfPatientsOfDoctor: (doctId)=>{
         return treatments.count(
             {distinct:true,
              col: 'patient_id',
             where: {
-                doctor_id: doct_id ,
+                doctor_id: doctId ,
             }
             }
         )
     },
 
-    addNurse: async (doct_id, n_id)=>{
+    addNurse: async (doctId, nurseId)=>{
        
         const check = await doctorsNurses.findAll({
             where: { 
                 [Op.and]: [
-                { doctor_id: doct_id },
-                { nurse_id:  n_id }
+                { doctor_id: doctId },
+                { nurse_id:  nurseId }
               ]
             }
         })
 
         if(check.length==0){
-            await doctorsNurses.create({ doctor_id: doct_id, nurse_id: n_id})
+            await doctorsNurses.create({ doctor_id: doctId, nurseId: nurseId})
         return 
         }throw new IncorrectNurse()
     },
 
-    deleteNurse: async (doct_id, n_id)=>{
+    deleteNurse: async (doctId, nurseId)=>{
        await doctorsNurses.destroy({
             where: { 
                 [Op.and]: [
-                    { doctor_id:doct_id},
-                    {nurse_id:n_id}
+                    { doctor_id:doctId},
+                    { nurse_id:nurseId}
             ]
         }
     })
         return
     },
 
-    addTreatment: async ( doct_id, pat_id, startDate, treatment)=>{
-        await treatments.create({doctor_id: doct_id ,patient_id:pat_id, start_date:startDate, notes: treatment})
+    addTreatment: async ( doctId, patId, startDate, treatment)=>{
+        await treatments.create({doctor_id: doctId ,patient_id:patId, start_date:startDate, notes: treatment})
         return
     }
 }
