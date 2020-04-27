@@ -33,10 +33,7 @@ module.exports = (sequelize, DataTypes, doctors) => {
         if(!Array.from(emails).find(element=> element===new_user.email)) {
             throw new DoctorNotFound();
         }
-        // // if (!user.changed('password')) {
-        // //     return sequelize.Promise.reject("not modified");
-        // //   }
-
+     
         //if selected is let you create account
         const SALT_INIT = 5;
         const salt = bcrypt.genSaltSync(SALT_INIT)
@@ -49,8 +46,9 @@ module.exports = (sequelize, DataTypes, doctors) => {
     }
 
     users.findUserByEmail = async function (user_email) {
-        let user = await users.findOne({where:{ email: user_email}})
-        user= users.build(user)
+        let myUser = await users.findOne({where:{ email: user_email}})
+        user= users.build(myUser)
+        user.password =myUser.password
         return user
     }
                
