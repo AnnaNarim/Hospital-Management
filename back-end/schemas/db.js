@@ -2,8 +2,8 @@ const Sequelize = require('sequelize')
 
 const sequelize= new Sequelize('hospital2', 'root', 'silva123', {
   host: 'localhost',
+  port: '3306',
   dialect: 'mysql', //|'sqlite'|'postgres'|'mssql'
-  query:{raw:true}
 }); 
 
 //test the connection
