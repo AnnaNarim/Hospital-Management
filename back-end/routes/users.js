@@ -16,7 +16,7 @@ router.post('/signup', asyncHandler(async (req, res) => {
 
 router.post('/login', asyncHandler(async(req,res) =>{
     const result =await users.login(req.body.email, req.body.password);
-    //stex stacvuma JWTn vor@ UI@ petqa vercni
+    //sending JWT, UI must handle
     res.status(200).json(result)
 }))
 

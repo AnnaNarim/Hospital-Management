@@ -10,13 +10,12 @@ const nurses =require('../services/nurses')
 const patients =require('../services/patients')
 
 router.get('/', passport.authenticate('jwt', { session: false }), asyncHandler(async (req, res) => {
-    // part showing current number of patients and nurses under doctors responsibility and nurses
+    //giving current number of patients and nurses under doctors responsibility 
     const doctID=await doctors.getDoctorID(req.user.email)
     const numOfDoctorsNurses =await doctors.numOfNursesOfDoctor(doctID[0].id)
     const numOfDoctorsPatients =await doctors.numOfPatientsOfDoctor(doctID[0].id)
-    const departmentsInfo =await departments.getAllDepartmentsInfo()
-
     //the lower part showing all info about departments
+    const departmentsInfo =await departments.getAllDepartmentsInfo()
     res.status(200).json(
         {
             NursesUnderMyResponsibility: numOfDoctorsNurses ,
@@ -64,7 +63,7 @@ router.post('/myNurses/add/:nurseid', passport.authenticate('jwt', {session:fals
 //viewing all patients
 router.get('/myPatients/view', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doctID=await doctors.getDoctorID(req.user.email)
-    const myPatients = await nurses.getMyPatients(doctID[0].id)
+    const myPatients = await doctors.getMyPatients(doctID[0].id)
     res.status(200).json(myPatients)
   
 }))
@@ -101,7 +100,8 @@ router.get('/departments/doctors/:id', passport.authenticate('jwt', {session:fal
     const doctorsPersonalInfo =await doctors.getDoctorsPersonalInfo(req.params.id)
     const numOfPatients =await doctors.numOfPatientsOfDoctor(req.params.id)
     const numberOfNurses =await doctors.numOfNursesOfDoctor(req.params.id)
-    res.status(200).json({ Personalnfo: doctorsPersonalInfo ,
+    res.status(200).json({ 
+        Personalnfo: doctorsPersonalInfo ,
         NumberOfPatients: numOfPatients,
         NumberOfNurses: numberOfNurses
     })
@@ -118,7 +118,8 @@ router.get('/departments/:name/nurses', passport.authenticate('jwt', {session:fa
 router.get('/departments/nurses/:id', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const nursesPersonalInfo =await nurses.nursesPersonalInfo(req.params.id)
     const WorkingWithDoctors =await nurses.listDoctorsOfNurse(req.params.id)
-    res.status(200).json({ Personalnfo: nursesPersonalInfo,
+    res.status(200).json({ 
+        Personalnfo: nursesPersonalInfo,
         WorkingWithDoctors: WorkingWithDoctors
     })
     
