@@ -11,10 +11,10 @@ const _  =require('lodash')
 
 
 
-const getIDsOfNursesInDepartment = async (dept_name) =>{
+const getIDsOfNursesInDepartment = async (deptName) =>{
     let IdsOfdoctorsInDept = await doctors.findAll({
         attributes: ['id'],
-        where: { department_name: dept_name},
+        where: { department_name: deptName},
         raw:true
     })
 
@@ -78,16 +78,16 @@ module.exports={
         return  add4
     },
 
-    getDoctorsInDepartment: (dept_name)=>{
+    getDoctorsInDepartment: (deptName)=>{
         return doctors.findAll({
             attributes: ['id', [Sequelize.fn('CONCAT', Sequelize.col('firstName'), ' ',  Sequelize.col('lastName')), 'DoctorName']],
-            where: { department_name: dept_name},
+            where: { department_name: deptName},
             raw:true
         })
     },
 
-    getNursesInDepartment: async (dept_name)=>{
-        const IdsOfNursesInDept = await getIDsOfNursesInDepartment(dept_name)
+    getNursesInDepartment: async (deptName)=>{
+        const IdsOfNursesInDept = await getIDsOfNursesInDepartment(deptName)
 
         const nursesNames= nurses.findAll({
             attributes: ['id', [Sequelize.fn('CONCAT', Sequelize.col('firstName'), ' ',  Sequelize.col('lastName')), 'NurseName']],
@@ -99,44 +99,3 @@ module.exports={
     getIDsOfNursesInDepartment
 }
 
-
-        // return departments.findAll({ 
-        //     attributes: ['name', [Sequelize.fn('count', Sequelize.col('doctors.id')), 'NumberOfNurses']],
-        //     include: [{
-        //         attributes: [],
-        //         model:doctors,
-        //         include:[{
-        //             required:true,
-        //             attributes: [],
-        //             model:doctorsNurses         
-        //         }]
-        //         }],
-        //     group: ['departments.name'],
-        //     raw:true
-        // })
-
-        
-        // doctors.findAll({ 
-        //     attributes: ['department_name', [Sequelize.fn('count', Sequelize.col('nurses.id')), 'NumberOfNurses']],
-        //     include: [{
-        //         attributes: [],
-        //         model:nurses, 
-        //         through: { attributes:[]} 
-        //         }],
-        //     group: ['doctors.department_name'],
-        //     raw:true
-        // })
-
-        // const NursesInDep= await departments.findAll({
-        //     attributes: ['name', [Sequelize.fn('count', Sequelize.col('doctors.nurses.id')),'NumberOfNurses']],
-        //     include: [{
-        //         attributes: [],
-        //         model:doctors,
-        //         include: [{
-        //             attributes: [],
-        //             model:nurses
-        //             }] 
-        //     }],
-        //     group: ['departments.name'],
-        //     raw:true
-        // })

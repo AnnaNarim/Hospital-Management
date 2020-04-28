@@ -10,12 +10,12 @@ const nurses =require('../services/nurses')
 const patients =require('../services/patients')
 
 router.get('/', passport.authenticate('jwt', { session: false }), asyncHandler(async (req, res) => {
-    //in the upper part showing number of patients current in doctors responsibility and nurses
-    const doct_id=await doctors.getDoctorID(req.user.email)
-    const numOfDoctorsNurses =await doctors.numOfNursesOfDoctor(doct_id[0].id)
-    const numOfDoctorsPatients =await doctors.numOfPatientsOfDoctor(doct_id[0].id)
-    const departmentsInfo =await departments.getAllDepartmentsInfo()
+    //giving current number of patients and nurses under doctors responsibility 
+    const doctID=await doctors.getDoctorID(req.user.email)
+    const numOfDoctorsNurses =await doctors.numOfNursesOfDoctor(doctID[0].id)
+    const numOfDoctorsPatients =await doctors.numOfPatientsOfDoctor(doctID[0].id)
     //the lower part showing all info about departments
+    const departmentsInfo =await departments.getAllDepartmentsInfo()
     res.status(200).json(
         {
             NursesUnderMyResponsibility: numOfDoctorsNurses ,
@@ -26,8 +26,8 @@ router.get('/', passport.authenticate('jwt', { session: false }), asyncHandler(a
 
 //viewing all personal nurses
 router.get('/myNurses/view', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
-    const doct_id=await doctors.getDoctorID(req.user.email)
-    const myNurses = await nurses.getMyNurses(doct_id[0].id)
+    const doctID=await doctors.getDoctorID(req.user.email)
+    const myNurses = await nurses.getMyNurses(doctID[0].id)
     res.status(200).json(myNurses)
   
 }))
@@ -43,8 +43,8 @@ router.get('/myNurses/view/:id', passport.authenticate('jwt', {session:false}) ,
 
 //deleteing personal nurse
 router.post('/myNurses/delete/:nurseid', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
-    const doct_id=await doctors.getDoctorID(req.user.email)
-    doctors.deleteNurse(doct_id, req.params.nurseid)
+    const doctID=await doctors.getDoctorID(req.user.email)
+    doctors.deleteNurse(doctID, req.params.nurseid)
     res.status(200).send('Nurse is deleted!')
 }))
 
@@ -55,15 +55,15 @@ router.get('/myNurses/add/:deptname' , passport.authenticate('jwt', {session:fal
 })) 
 
 router.post('/myNurses/add/:nurseid', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
-    const doct_id=await doctors.getDoctorID(req.user.email)
-    doctors.addNurse(doct_id[0].id, req.params.nurseid)
+    const doctID=await doctors.getDoctorID(req.user.email)
+    doctors.addNurse(doctID[0].id, req.params.nurseid)
     res.status(201).send('Nurse is added!')
 })) 
 
 //viewing all patients
 router.get('/myPatients/view', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
-    const doct_id=await doctors.getDoctorID(req.user.email)
-    const myPatients = await nurses.getMyPatients(doct_id[0].id)
+    const doctID=await doctors.getDoctorID(req.user.email)
+    const myPatients = await doctors.getMyPatients(doctID[0].id)
     res.status(200).json(myPatients)
   
 }))
@@ -73,7 +73,7 @@ router.get('/myPatients/view/:id', passport.authenticate('jwt', {session:false})
     const patientsPersonalnfo = await patients.getPersonalInfoOfPatient(req.params.id)
     const numOfPatientsDoctors =await patients.getNumOfDoctorsCuringPatient(req.params.id)
     const doctorsAndTreatmentsOfPatient = await patients.listingDoctorsAndTreatmentsOfPatient(req.params.id)
-    res.status(200).json({patientsPersonalnfo,numOfPatientsDoctors, doctorsAndTreatmentsOfPatient})
+    res.status(200).json({patientsPersonalnfo, numOfPatientsDoctors, doctorsAndTreatmentsOfPatient})
   
 }))
 
@@ -84,8 +84,8 @@ router.get('/myPatients/add' , passport.authenticate('jwt', {session:false}) , a
 })) 
 
 router.post('/myPatients/add/:patientId', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
-    const doct_id=await doctors.getDoctorID(req.user.email)
-    doctors.addTreatment(doct_id[0].id, req.params.patientId, req.body.startDate, req.body.treatment)
+    const doctID=await doctors.getDoctorID(req.user.email)
+    doctors.addTreatment(doctID[0].id, req.params.patientId, req.body.startDate, req.body.treatment)
     res.status(201).send('Treatment is added!')
 })) 
 
@@ -100,7 +100,8 @@ router.get('/departments/doctors/:id', passport.authenticate('jwt', {session:fal
     const doctorsPersonalInfo =await doctors.getDoctorsPersonalInfo(req.params.id)
     const numOfPatients =await doctors.numOfPatientsOfDoctor(req.params.id)
     const numberOfNurses =await doctors.numOfNursesOfDoctor(req.params.id)
-    res.status(200).json({ Personalnfo: doctorsPersonalInfo ,
+    res.status(200).json({ 
+        Personalnfo: doctorsPersonalInfo ,
         NumberOfPatients: numOfPatients,
         NumberOfNurses: numberOfNurses
     })
@@ -117,7 +118,8 @@ router.get('/departments/:name/nurses', passport.authenticate('jwt', {session:fa
 router.get('/departments/nurses/:id', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const nursesPersonalInfo =await nurses.nursesPersonalInfo(req.params.id)
     const WorkingWithDoctors =await nurses.listDoctorsOfNurse(req.params.id)
-    res.status(200).json({ Personalnfo: nursesPersonalInfo,
+    res.status(200).json({ 
+        Personalnfo: nursesPersonalInfo,
         WorkingWithDoctors: WorkingWithDoctors
     })
     

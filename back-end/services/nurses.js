@@ -6,13 +6,13 @@ const doctorsNurses=require('../schemas/db').doctorsNurses
 const getIDsOfNursesInDepartment =require('../services/departments').getIDsOfNursesInDepartment
 
 module.exports={
-    getMyNurses: (doct_id)=>{
+    getMyNurses: (doctId)=>{
         return nurses.findAll({
                attributes: ['nurses.id', 'nurses.firstName', 'nurses.lastName'],
                include:[{
                 attributes: [],
                 model: doctorsNurses,
-                where: { doctor_id: doct_id} 
+                where: { doctor_id: doctId} 
             }],
             raw:true
         })  
@@ -52,8 +52,8 @@ module.exports={
         })  
     },
 
-    getMailsOfNursesInDepartment: async (dept_name)=>{
-        const nursesIDs =await getIDsOfNursesInDepartment(dept_name)
+    getMailsOfNursesInDepartment: async (deptName)=>{
+        const nursesIDs =await getIDsOfNursesInDepartment(deptName)
 
         let nursesMails= nurses.findAll({
             attributes: ['id', 'email'],

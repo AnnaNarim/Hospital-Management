@@ -6,24 +6,6 @@ const Op=Sequelize.Op
 const _=require('lodash')
 
 module.exports={
-     getMyPatients: async (doct_id)=>{
-
-         let PatientsIDs= await treatments.findAll({
-             attributes: [Sequelize.fn('DISTINCT', Sequelize.col('patient_id')), 'patient_id'],
-             where: { doctor_id: doct_id}
-         })
-
-         PatientsIDs = PatientsIDs.map(a => a.patient_id)
-
-         return patients.findAll({
-            attributes: ['id','firstName', 'lastName'],
-            where: { 
-                id: { [Op.in]: PatientsIDs }
-            },
-            raw:true
-        }) 
-    },
-
     getPersonalInfoOfPatient: (patient)=>{
         return patients.findAll({
             attributes: { exclude: ['id', 'gender']},
@@ -42,7 +24,7 @@ module.exports={
     },
     
 
-    listingDoctorsAndTreatmentsOfPatien: async(patient) =>
+    listingDoctorsAndTreatmentsOfPatient: async(patient) =>
     {
         let doctorsTreatingID = await treatments.findAll({
             attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('doctor_id')), 'doctor_id']],

@@ -7,9 +7,9 @@ const { DoctorNotFound,UserAlreadyExists,EmailIsIncorrect, PasswordIncorrect} = 
 
 module.exports = {
     
-    createUser: async (new_user) => {
+    createUser: async (newuser) => {
 
-        const newUser= await  users.CreateNewUser(new_user)
+        const newUser= await  users.CreateNewUser(newuser)
 
         if(!newUser) {
             throw new UserAlreadyExists();
