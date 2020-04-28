@@ -1,4 +1,4 @@
-import { fetchOptions, parseJSON, checkStatus, sendError } from './request';
+import { fetchOptions, parseJSON } from './request';
 import {
   REGISTER, REGISTER_SUCCESS, REGISTER_ERROR,
   LOGIN, LOGIN_SUCCESS, LOGIN_ERROR,
@@ -6,34 +6,34 @@ import {
   LOGOUT
 } from '../events';
 
-// const APIPATH = `${Config.apiPath}/auth`;
+const APIPATH = `http://localhost:3002`;
 
-export const fetchCurrentUser = () => (
-  (dispatch) => {
-    dispatch({ type: FETCH_USER });
+// export const fetchCurrentUser = () => (
+//   (dispatch) => {
+//     dispatch({ type: FETCH_USER });
 
-    return fetch(`${APIPATH}/user`, fetchOptions({
-      method: 'GET'
-    }))
-      .then(checkStatus)
-      .then(parseJSON)
-      .then(response => Object.assign({}, response, { isLoggedIn: true }))
-      .then(response => dispatch({ type: USER_SUCCESS, user: response }))
-      .catch((error) => {
-        dispatch({
-          type: USER_ERROR,
-          user: {
-            isLoggedIn: false
-          },
-          error: error.message,
-          status: error.status || 'server_down'
-        });
-        if (!error.status) {
-          dispatch({ type: SERVER_DOWN })
-        }
-        sendError(error);
-      });
-  });
+//     return fetch(`${APIPATH}/user`, fetchOptions({
+//       method: 'GET'
+//     }))
+//       .then(checkStatus)
+//       .then(parseJSON)
+//       .then(response => Object.assign({}, response, { isLoggedIn: true }))
+//       .then(response => dispatch({ type: USER_SUCCESS, user: response }))
+//       .catch((error) => {
+//         dispatch({
+//           type: USER_ERROR,
+//           user: {
+//             isLoggedIn: false
+//           },
+//           error: error.message,
+//           status: error.status || 'server_down'
+//         });
+//         if (!error.status) {
+//           dispatch({ type: SERVER_DOWN })
+//         }
+//         sendError(error);
+//       });
+//   });
 
 // export const register = data => (
 //   (dispatch) => {
@@ -59,40 +59,44 @@ export const fetchCurrentUser = () => (
 //       });
 //   });
 
-export const login = data => (
+export const login = data => {
+  console.log('here', JSON.stringify(data))
+  return (
   (dispatch) => {
     dispatch({ type: LOGIN });
 
-    return fetch(`${APIPATH}/login`, fetchOptions({
+    return fetch(`${APIPATH}/users/login`, {
       method: 'POST',
-      body: JSON.stringify(data)
-    }))
-      .then(checkStatus)
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then(parseJSON)
       .then(response => Object.assign({}, response, { isLoggedIn: true }))
-      .then(response => dispatch({ type: LOGIN_SUCCESS, user: response }))
+      .then(response => {
+        console.log('---> response', response)
+        return dispatch({ type: LOGIN_SUCCESS, user: response })
+      })
       .catch((error) => {
-        dispatch({
+        console.log('---> error', error)
+        return dispatch({
           type: LOGIN_ERROR,
           user: {
             isLoggedIn: false
           },
-          error: error.message,
-          status: error.status || 'server_down'
+          error: error.message
         });
-        if (!error.status) {
-          dispatch({ type: SERVER_DOWN })
-        }
-        sendError(error);
       });
   });
+}
 
-export const logout = () => ( // TODO error handling
-  dispatch => fetch(`${APIPATH}/logout`, fetchOptions({
-    method: 'GET'
-  }))
-    .then(checkStatus)
-    .then(parseJSON)
-    .then(() => dispatch({ type: LOGOUT })
-  )
-);
+// export const logout = () => ( // TODO error handling
+//   dispatch => fetch(`${APIPATH}/logout`, fetchOptions({
+//     method: 'GET'
+//   }))
+//     .then(checkStatus)
+//     .then(parseJSON)
+//     .then(() => dispatch({ type: LOGOUT })
+//   )
+// );

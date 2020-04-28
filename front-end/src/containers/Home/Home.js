@@ -177,6 +177,7 @@ class Home extends Component {
 
 const mapStateToProps = state => ({
   error: state.auth.error,
+  user: state.auth.user
 });
 
 function mapDispatchToProps(dispatch) {

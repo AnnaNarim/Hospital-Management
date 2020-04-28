@@ -26,36 +26,26 @@ const user = (state = initState, action) => {
     case FETCH_USER:
       return Object.assign({}, state, { loading: true });
 
-    case LOGIN:
-    case REGISTER:
-    return Object.assign({}, initState, { loading: true });
-
-    case LOGIN_SUCCESS: return Object.assign({}, initState, { user: action.user });
-
-    case REGISTER_SUCCESS:
-      return Object.assign({}, state, { loading: false, success: true, user: action.user });
-
     case USER_SUCCESS:
       return Object.assign({}, initState, { user: action.user });
 
-    case REGISTER_ERROR:
-    case USER_ERROR: {
-      if (action.status !== 401 && action.status !== 'server_down') {
+    case USER_ERROR:
+      if (action.status !== 401) {
         error = action.error;
       } else {
         error = false;
       }
-
       return Object.assign({}, initState, { error });
-    }
+
+    case LOGIN:
+    return Object.assign({}, initState, { loading: true });
+
+    case LOGIN_SUCCESS: return Object.assign({}, initState, { user: action.user });
 
     case LOGOUT: return Object.assign({}, initState);
 
     case LOGIN_ERROR:
-      if (action.status === 'server_down') {
-        error = false;
-      }
-      return Object.assign({}, initState, { error, user: action.user });
+      return Object.assign({}, initState, { error });
 
     default: return Object.assign({}, state);
   }

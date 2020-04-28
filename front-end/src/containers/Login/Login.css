@@ -6,7 +6,7 @@
 }
 
 .login button {
-	background: #03ace8;
+	background: #03ace8	!important;
 }
 
 .login button:hover {
@@ -21,4 +21,19 @@
 .login > img {
 	width: 100%;
 	height: 100%;
+}
+
+.login-button {
+	color: #03ace8;
+}
+
+.my-header span{
+	color: #1e4ea1!important;
+	margin-left: 15px;
+}
+
+.my-header {
+	display: flex;
+  align-items: center;
+  justify-content: center;
 }
