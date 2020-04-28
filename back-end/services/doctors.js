@@ -17,6 +17,24 @@ module.exports={
         })
 
     },
+
+    getMyPatients: async (doctId)=>{
+
+        let PatientsIDs= await treatments.findAll({
+            attributes: [Sequelize.fn('DISTINCT', Sequelize.col('patient_id')), 'patient_id'],
+            where: { doctor_id: doctId}
+        })
+
+        PatientsIDs = PatientsIDs.map(a => a.patient_id)
+
+        return patients.findAll({
+           attributes: ['id','firstName', 'lastName'],
+           where: { 
+               id: { [Op.in]: PatientsIDs }
+           },
+           raw:true
+       }) 
+   },
     
     getDoctorsPersonalInfo: (doctId)=>{
         return doctors.findAll({
