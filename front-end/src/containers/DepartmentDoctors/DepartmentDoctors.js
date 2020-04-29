@@ -90,8 +90,8 @@ class Doctors extends Component {
     	<div className='single-person-content'>
         <div>
           <div>
-            <Image src='https://react.semantic-ui.com/images/wireframe/image.png' size='small' />
-            <Header as='h2'>{singleDoctor.Personalnfo[0].firstName} {singleDoctor.Personalnfo[0].lastName} {singleDoctor.Personalnfo[0].middleName}</Header>
+            <Image src={singleDoctor.PersonalInfo[0].picture}  size='small' />
+            <Header as='h2'>{singleDoctor.PersonalInfo[0].firstName} {singleDoctor.PersonalInfo[0].lastName} {singleDoctor.PersonalInfo[0].middleName}</Header>
           </div>
         </div>
         <Divider />
@@ -99,12 +99,12 @@ class Doctors extends Component {
           <Icon name='user circle' />
           Personal Info
         </Header>
-        {this.getPersonalInfo(singleDoctor.Personalnfo[0])}
+        {this.getPersonalInfo(singleDoctor.PersonalInfo[0])}
         <Header as='h3'>
           <Icon name='hospital outline' />
           Hospital Info
         </Header>
-        {this.getHospitalInfo(singleDoctor.Personalnfo[0], singleDoctor.NumberOfNurses, singleDoctor.NumberOfPatients)}
+        {this.getHospitalInfo(singleDoctor.PersonalInfo[0], singleDoctor.NumberOfNurses, singleDoctor.NumberOfPatients)}
     	</div>
     ) : null;
   }

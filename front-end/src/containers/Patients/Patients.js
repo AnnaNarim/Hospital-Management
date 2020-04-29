@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { LeftSideList } from 'evermut';
+import { LeftSideList, Loader } from 'evermut';
 import { Header, Image, Divider, Button, Icon, Modal } from 'semantic-ui-react';
+import { getMyPatients, getIndividualPatient } from '../../actions/myPatients';
 import '../Nurses/Nurses.css';
 import './Patients.css';
 
 import patientPic from '../../static/patient1.jpg';
 
 class Patients extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
+
+    const { user, match, _getMyPatients, _getIndividualPatient } = props;
+    const { patientId } = match.params;
+
+    _getMyPatients(user.accessToken)
+    patientId && _getIndividualPatient(user.accessToken, patientId);
 
 		this.state = {
 			list: [
@@ -35,34 +42,25 @@ class Patients extends Component {
           treatment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
         },
       ],
-      selected: 1, // id of a patient that is selected
+      selected: patientId && parseInt(patientId, 10),
       openDelete: false
 		}
 	}
 
-  componentDidMount() {
-    const { patientId } = this.props.match.params;
-
-    // patientId && this._getPatient(patientId);
-    // if (!this.props.patients.length && !this.props.patientLoading) {
-    //   this.props._getMyPatients();
-    // }
-
-    if(!patientId) {
-      this.props.history.push(`/my/patient/${1}`);
-    }
-  }
-
   componentDidUpdate(prevProps) {
-    // const { match } = prevProps;
-    // const { params } = this.props.match;
+    const { match } = prevProps;
+    const { user, history, myPatients, _getIndividualPatient } = this.props;
+    const { params } = this.props.match;
 
-    // if (match.params.patientId !== params.patientId) {
-    //   this._getPatient(patientId);
-
-    // if(prevProps.patientLoading && !this.props.patientLoading && this.props.patients.length) {
-    //   this.props.history.push(`my/patient/${this.props.patients[0].id}`);
-    // }
+    if(!prevProps.myPatients.length && myPatients.length && !params.patientId) {
+      history.push(`/my/patients/${myPatients[0].id}`);
+      _getIndividualPatient(user.accessToken, myPatients[0].id);
+      this.setState({ selected: myPatients[0].id })
+    }
+    if (match.params.patientId !== params.patientId) {
+      _getIndividualPatient(user.accessToken, params.patientId);
+      this.setState({ selected: parseInt(params.nurseId, 10) })
+    }
   }
 
 	goBack = () => {
@@ -72,40 +70,47 @@ class Patients extends Component {
   }
 
   selectItem(id) {
+    const { user, match } = this.props;
+
     this.setState({ selected: id });
-    this.props.history.push(`/my/patient/${id}`);
-    //call the get single person info action by its id
+    this.props.history.push(`/my/patients/${id}`);
+    this.props._getIndividualPatient(user.accessToken, id);
   }
 
   _getLeftSideListHeader = (item) =>  {
     return (
-      <Header as='h4' color='blue'>{item.name}</Header>
+      <Header as='h4' color='blue'>{item.firstName} {item.lastName}</Header>
     );
   }
 
-  getPeronalInfo() {
+  getPeronalInfo(info) {
     const { singlePerson } = this.state;
     const { phone, email } = singlePerson;
 
     return (
       <div className='personal-info'>
-        <div><Icon name='phone' /> {phone}</div>
-        <div><Icon name='at' /> {email}</div>
+        <div><Icon name='phone' /> {info.phoneNumber}</div>
+        <div><Icon name='at' /> {info.email}</div>
+        <div><Icon name='point' /> str. {info.streetName} {info.apartmentNumber}, {info.city}</div>
+        <div><Icon name='birthday cake' /> {info.DOB}</div>
       </div>
     );
   }
 
-  getTreatmentsInfo() {
+  getTreatmentsInfo(treatments, numberOfDoctors) {
     const { singlePersonTreatments } = this.state;
 
     return (
       <div className='personal-info'>
-        {singlePersonTreatments.map((item, index) => {
-          const { date, treatment } = item;
+        <div>Getting treatments from {numberOfDoctors} doctors.</div>
+        {treatments.map((item, index) => {
+          const { start_date, note, DoctorName } = item;
+
           return (
             <div className='treatments' key={`patient-treat-${index}`}>
-              <div><Icon name='calendar alternate' /> {date}</div>
-              <div>{treatment}</div>
+              <div><Icon name='calendar alternate' /> {start_date}</div>
+              <div><Icon name='doctor' /> {DoctorName}</div>
+              <div>{note || "Note"}</div>
             </div>
           );
         }) || null}
@@ -145,13 +150,14 @@ class Patients extends Component {
 
   getContent() {
     const { singlePerson, selected } = this.state;
+    const { singlePatient } = this.props;
 
-    return (selected && singlePerson) ? (
+    return (selected && Object.keys(singlePatient).length) ? (
     	<div className='single-person-content'>
         <div>
           <div>
-      		  <Image src={singlePerson.img} size='small' />
-            <Header as='h2'>{singlePerson.name}</Header>
+            <Image src={singlePatient.patientsPersonalInfo[0].picture} size='small' />
+            <Header as='h2'>{singlePatient.patientsPersonalInfo[0].firstName} {singlePatient.patientsPersonalInfo[0].lastName}</Header>
           </div>
           <Button basic color='red' content='Delete' onClick={() => this.handleDeleteModal()}/>
         </div>
@@ -161,24 +167,26 @@ class Patients extends Component {
           <Icon name='user circle' />
           Personal Info
         </Header>
-        {this.getPeronalInfo()}
+        {this.getPeronalInfo(singlePatient.patientsPersonalInfo[0])}
         <Header as='h3'>
           <Icon name='treatment' />
           Treatments
         </Header>
-        {this.getTreatmentsInfo()}
+        {this.getTreatmentsInfo(singlePatient.doctorsAndTreatmentsOfPatient, singlePatient.numOfPatientsDoctors)}
     	</div>
     ) : null;
   }
-  render () {
-  	const { list, loading, selected } = this.state;
 
-    return (
+  getView() {
+    const { selected } = this.state;
+    const { myPatients, myPatientsLoading, singlePatientLoading } = this.props;
+
+    return myPatients.length ? (
       <div className='component'>
-      	<LeftSideList
-          list={list}
+        <LeftSideList
+          list={myPatients}
           selected={selected}
-          loading={loading}
+          loading={myPatientsLoading}
           header={(item) => this._getLeftSideListHeader(item)}
           selectItem={(id) => this.selectItem(id)}
           backButtonName='Back to Home'
@@ -186,19 +194,30 @@ class Patients extends Component {
           backButtonStyle={{ marginBottom: 0, marginTop: 12}}
           containerStyle={{ width: 350 }}
         />
-        {this.getContent()}
+        {(!singlePatientLoading && this.getContent()) || <Loader />}
       </div>
-    );
+    ) : <div style={{margin: 'auto'}}>No nurses under my responsibility.</div>;
+  }
+
+  render () {
+    const { myPatientsLoading } = this.props;
+
+    return myPatientsLoading ? <Loader /> : this.getView();
   }
 }
 
 const mapStateToProps = state => ({
-
+  user: state.auth.user,
+  myPatients: state.myPatients.myPatients,
+  myPatientsLoading: state.myPatients.myPatientsLoading,
+  singlePatientLoading: state.myPatients.singlePatientLoading,
+  singlePatient: state.myPatients.singlePatient,
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-
+    _getMyPatients: token => dispatch(getMyPatients(token)),
+    _getIndividualPatient: (token, id) => dispatch(getIndividualPatient(token, id)),
   };
 }
 

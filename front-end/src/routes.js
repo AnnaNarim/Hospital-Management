@@ -21,10 +21,10 @@ const routes = (
 
       <ProtectedRoute exact path="/home" component={Home} />
 
-      <ProtectedRoute exact path="/my/nurse" component={Nurses} />
-      <ProtectedRoute exact path="/my/nurse/:nurseId" component={Nurses} />
-      <ProtectedRoute exact path="/my/patient" component={Patients} />
-      <ProtectedRoute exact path="/my/patient/:patientId" component={Patients} />
+      <ProtectedRoute exact path="/my/nurses" component={Nurses} />
+      <ProtectedRoute exact path="/my/nurses/:nurseId" component={Nurses} />
+      <ProtectedRoute exact path="/my/patients" component={Patients} />
+      <ProtectedRoute exact path="/my/patients/:patientId" component={Patients} />
 
       <ProtectedRoute exact path="/departments/:departmentId/doctors" component={DepartmentDoctors} />
       <ProtectedRoute exact path="/departments/:departmentId/doctors/:doctorId" component={DepartmentDoctors} />

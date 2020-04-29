@@ -44,7 +44,7 @@ class Home extends Component {
   clickView = type => {
     const { history } = this.props;
 
-    history.push(`/my/${type}`);
+    history.push(`/my/${type}s`);
   }
 
   getCard(title, description, icon, count, type) {
