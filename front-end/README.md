@@ -28,14 +28,14 @@ Your app is ready to be deployed!
 
 ### Folder Structure
 
----> build
----> node_modules
----> public
----> src
-     ---> actions # redux actions
-     ---> components # components used in containers
-     ---> containers # pages' views
-     ---> reducers # redux reducers
-     ---> routeComponens # protected and public wrapper components
-     ---> static # static stuff like pictures, logo, background
+---> build<br>
+---> node_modules<br>
+---> public<br>
+---> src<br>
+     ---> actions # redux actions<br>
+     ---> components # components used in containers<br>
+     ---> containers # pages' views<br>
+     ---> reducers # redux reducers<br>
+     ---> routeComponens # protected and public wrapper components<br>
+     ---> static # static stuff like pictures, logo, background<br>
       
