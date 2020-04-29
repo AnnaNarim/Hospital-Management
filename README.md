@@ -4,25 +4,25 @@ Project is about hospital management system from doctors' perspectives.
 
 Folder structure
 
- ---> back-end<br>
- ---> front-end
+ - back-end<br>
+ - front-end
 
  In order to run back-end that is written with express, run
-
+ It will run on [http://localhost:3030](http://localhost:3030)
  ```
- npm start
+ node server.js
  ```
 
  In order to run front-end that is written with react, run
 
-for production:
+for production and go to [http://localhost:3003](http://localhost:3003):
 
  ```
  npm run build
  npm run server
  ```
 
- for development:
+ for development mode that will run on [http://localhost:3000](http://localhost:3000):
 
  ```
  npm start
