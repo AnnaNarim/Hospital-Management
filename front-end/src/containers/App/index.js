@@ -3,34 +3,17 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Loader } from 'evermut';
 import './App.css';
-// import { fetchCurrentUser } from '../../actions/auth';
+import { currentUser } from '../../actions/auth';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    // props._getUser();
-
-    this.state = {
-      loading: true,
-      propsLoading: props.loading
-    }
+    props._getUser();
   }
-
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (!prevState.propsLoading && nextProps.loading) {
-  //     return { propsLoading: true };
-  //   }
-  //   if (prevState.propsLoading && !nextProps.loading) {
-  //     return { propsLoading: false, loading: false };
-  //   }
-
-  //   return null;
-  // }
 
   render() {
     const { children, loading } = this.props;
-    // const { loading } = this.state;
 
     return (
       <div className='wrapper'>
@@ -41,11 +24,11 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.auth.loading,
+  loading: state.auth.currentUserLoading,
 });
 
 export const mapDispatchToProps = dispatch => ({
-  // _getUser: () => dispatch(fetchCurrentUser())
+  _getUser: () => dispatch(currentUser())
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

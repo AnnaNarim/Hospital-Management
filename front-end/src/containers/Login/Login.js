@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Image, Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
-import { Login } from 'evermut';
+import { Image, Button, Form, Grid, Header, Segment } from 'semantic-ui-react';
 import { login } from '../../actions/auth';
 import logo from "../../static/logo.png";
 import background from "../../static/background.jpg";
@@ -18,20 +17,18 @@ class LogIn extends Component {
   }
 
   handleChange(event) {
-    console.log('qqq', event.target.name, event.target.value)
-
     this.setState({ [event.target.name]: event.target.value });
   }
 
   login() {
     const { email, password } = this.state;
-    // console.log('here', this.state.email, this.state.password);
     if (email && password) {
       this.props._login({ email, password });
     }
   }
 
   getView(width) {
+    const { email, password } = this.state;
     const { error, loading } = this.props;
     const visible = !!error ? 'visible' : 'hidden';
 
@@ -44,8 +41,8 @@ class LogIn extends Component {
               <span>Doctors</span>
             </Header>
             <Form size='large'>
-              <Segment stacked style={{ padding: "30px", paddingTop: '7.5px' }}>
-                <span className='error' style={{ visibility: visible, marginTop: '15px', marginBottom: '7.5px', display: 'block', height: "15px" }}>{error}</span>
+              <Segment stacked style={{ padding: "45px", paddingTop: '7.5px' }}>
+                <span className='error' style={{ visibility: visible, marginTop: '15px', marginBottom: '15px', display: 'block', height: "15px" }}>{error}</span>
                 <Form.Input
                   onChange={(e) => this.handleChange(e)}
                   name='email'
@@ -63,7 +60,7 @@ class LogIn extends Component {
                   placeholder='Password'
                   type='password'
                 />
-                <Button loading={loading} color='teal' fluid size='large' onClick={(item) => this.login(item)}>
+                <Button disabled={!email || !password} loading={loading} color='teal' fluid size='large' onClick={(item) => this.login(item)}>
                   Login
                 </Button>
               </Segment>

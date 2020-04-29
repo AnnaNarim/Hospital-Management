@@ -1,8 +1,12 @@
 import { combineReducers } from 'redux';
 import auth from './auth';
-import todo from './todo';
+import homeInfo from './homeInfo';
+import departmentDoctors from './departmentDoctors';
+import departmentNurses from './departmentNurses';
 
 export default combineReducers({
 	auth,
-	todo
+	homeInfo,
+	departmentDoctors,
+	departmentNurses
 });

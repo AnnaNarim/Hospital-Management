@@ -1,56 +1,41 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { LeftSideList } from 'evermut';
-import { Header, Image, Divider, Icon } from 'semantic-ui-react';
+import { LeftSideList, Loader } from 'evermut';
+import { Header, Image, Divider, Icon, Table } from 'semantic-ui-react';
+import { getDepartmentNurses, getIndividualNurse } from '../../actions/departmentNurses';
 import '../Nurses/Nurses.css';
 
-import doctor1 from '../../static/nurse1.jpg';
+// import nurse1 from '../../static/nurse1.jpg';
 
 class DepartmentNurses extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
+
+    const { user, match, _getDepartmentNurses, _getIndividualNurse } = props;
+    const { departmentId, nurseId } = match.params;
+
+    _getDepartmentNurses(user.accessToken, departmentId)
+    nurseId && _getIndividualNurse(user.accessToken, nurseId);
 
 		this.state = {
-			list: [
-        {id: 1, name: "Smt Wasd"},
-        {id: 2, name: "Bgh Rgfdfg"},
-      ],
-      singlePerson: {
-        id: 1,
-        name: "Smt Wasd",
-        img: doctor1,
-        phone: '+12312312',
-        email: 'SmtWasd@gmail.com',
-        department: 'Cardiology',
-        patients: 12,
-      },
-      selected: 1, // id of a doctor that is selected
+      selected: nurseId && parseInt(nurseId, 10)
 		}
 	}
 
-  componentDidMount() {
-    const { nurseId, departmentId } = this.props.match.params;
-
-    // doctorId && this._getDoctor(doctorId);
-    // if (!this.props.doctors.length && !this.props.doctorLoading) {
-    //   this.props._getDoctors();
-    // }
-
-    if(!nurseId) {
-      this.props.history.push(`/departments/${departmentId}/nurses/${1}`);
-    }
-  }
-
   componentDidUpdate(prevProps) {
-    // const { match } = prevProps;
-    // const { params } = this.props.match;
+    const { match } = prevProps;
+    const { user, history, departNurses, _getIndividualNurse } = this.props;
+    const { params } = this.props.match;
 
-    // if (match.params.nurseId !== params.nurseId) {
-    //   this._getNurse(nurseId);
-
-    // if(prevProps.nursesLoading && !this.props.nursesLoading && this.props.nurses.length) {
-    //   this.props.history.push(`my/nurse/${this.props.nurses[0].id}`);
-    // }
+    if(!prevProps.departNurses.length && departNurses.length && !params.nurseId) {
+      history.push(`/departments/${params.departmentId}/nurses/${departNurses[0].id}`);
+      _getIndividualNurse(user.accessToken, departNurses[0].id);
+      this.setState({ selected: departNurses[0].id })
+    }
+    if (match.params.nurseId !== params.nurseId) {
+      _getIndividualNurse(user.accessToken, params.nurseId);
+      this.setState({ selected: parseInt(params.nurseId, 10) })
+    }
   }
 
 	goBack = () => {
@@ -60,53 +45,65 @@ class DepartmentNurses extends Component {
   }
 
   selectItem(id) {
-    const { departmentId } = this.props.match.params;
+    const { user, match } = this.props;
+    const { departmentId } = match.params;
 
     this.setState({ selected: id });
     this.props.history.push(`/departments/${departmentId}/nurses/${id}`);
-    //call the get single person info action by its id
+    this.props._getIndividualNurse(user.accessToken, id);
   }
 
   _getLeftSideListHeader = (item) =>  {
     return (
-      <Header as='h4' color='blue'>{item.name}</Header>
+      <Header as='h4' color='blue'>{item.NurseName}</Header>
     );
   }
 
-  getPeronalInfo() {
-    const { singlePerson } = this.state;
-    const { phone, email } = singlePerson;
-
+  getPersonalInfo(info) {
     return (
       <div className='personal-info'>
-        <div><Icon name='phone' /> {phone}</div>
-        <div><Icon name='at' /> {email}</div>
+        <div><Icon name='phone' /> {info.phoneNumber}</div>
+        <div><Icon name='at' /> {info.email}</div>
+        <div><Icon name='point' /> str. {info.streetName} {info.apartmentNumber}, {info.city}</div>
+        <div><Icon name='birthday cake' /> {info.DOB}</div>
       </div>
     );
   }
 
-  getHospitalInfo() {
-    const { singlePerson } = this.state;
-    const { department, patients, tasks } = singlePerson;
-
+  getHospitalInfo(info) {
     return (
       <div className='personal-info'>
-        <div><Icon name='building' /> {department}</div>
-        <div><Icon name='tag' /> Doctor</div>
-        <div><Icon name='bed' /> {patients}</div>
+        <Table celled style={{ width: '600px'}}>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>Department</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {info && info.map((item, key) => (
+              <Table.Row key={`doctors-working-with-${key}`}>
+                <Table.Cell>{item.DoctorName}</Table.Cell>
+                <Table.Cell>{item.department_name}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
       </div>
     );
   }
 
   getContent() {
-    const { singlePerson, selected } = this.state;
+    const { selected } = this.state;
+    const { singleNurse } = this.props;
+    // <Image src={nurse1} size='small' />
 
-    return (selected && singlePerson) ? (
+    return (selected && Object.keys(singleNurse).length) ? (
     	<div className='single-person-content'>
         <div>
           <div>
-            <Image src={singlePerson.img} size='small' />
-            <Header as='h2'>{singlePerson.name}</Header>
+            <Image src='https://react.semantic-ui.com/images/wireframe/image.png' size='small' />
+            <Header as='h2'>{singleNurse.Personalnfo[0].firstName} {singleNurse.Personalnfo[0].lastName} {singleNurse.Personalnfo[0].middleName}</Header>
           </div>
         </div>
         <Divider />
@@ -114,24 +111,26 @@ class DepartmentNurses extends Component {
           <Icon name='user circle' />
           Personal Info
         </Header>
-        {this.getPeronalInfo()}
+        {this.getPersonalInfo(singleNurse.Personalnfo[0])}
         <Header as='h3'>
           <Icon name='hospital outline' />
-          Hospital Info
+          Doctors working with
         </Header>
-        {this.getHospitalInfo()}
+        {this.getHospitalInfo(singleNurse.WorkingWithDoctors)}
     	</div>
     ) : null;
   }
-  render () {
-  	const { list, loading, selected } = this.state;
 
-    return (
+  getView() {
+    const { selected } = this.state;
+    const { departNurses, departNursesLoading, singleNurseLoading } = this.props;
+
+    return departNurses.length ? (
       <div className='component'>
-      	<LeftSideList
-          list={list}
+        <LeftSideList
+          list={departNurses}
           selected={selected}
-          loading={loading}
+          loading={departNursesLoading}
           header={(item) => this._getLeftSideListHeader(item)}
           selectItem={(id) => this.selectItem(id)}
           backButtonName='Back to Home'
@@ -139,19 +138,30 @@ class DepartmentNurses extends Component {
           backButtonStyle={{ marginBottom: 0, marginTop: 12}}
           containerStyle={{ width: 350 }}
         />
-        {this.getContent()}
+        {(!singleNurseLoading && this.getContent()) || <Loader />}
       </div>
-    );
+    ) : <div style={{margin: 'auto'}}>No nurses in this department.</div>;
+  }
+
+  render () {
+    const { departNursesLoading } = this.props;
+
+    return departNursesLoading ? <Loader /> : this.getView();
   }
 }
 
 const mapStateToProps = state => ({
-
+  user: state.auth.user,
+  departNurses: state.departmentNurses.departNurses,
+  departNursesLoading: state.departmentNurses.departNursesLoading,
+  singleNurseLoading: state.departmentNurses.singleNurseLoading,
+  singleNurse: state.departmentNurses.singleNurse,
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-
+    _getDepartmentNurses: (token, name) => dispatch(getDepartmentNurses(token, name)),
+    _getIndividualNurse: (token, id) => dispatch(getIndividualNurse(token, id)),
   };
 }
 

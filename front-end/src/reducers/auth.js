@@ -1,11 +1,13 @@
 import {
   LOGIN, LOGIN_SUCCESS, LOGIN_ERROR, LOGOUT,
   FETCH_USER, USER_SUCCESS, USER_ERROR,
-  REGISTER, REGISTER_SUCCESS, REGISTER_ERROR
 } from '../events';
+
+const localStorage = window.localStorage;
 
 const initState = {
   loading: false,
+  currentUserLoading: false,
   resetLoading: false,
   passChangeLoading: false,
   error: false,
@@ -24,10 +26,10 @@ const user = (state = initState, action) => {
 
   switch (action.type) {
     case FETCH_USER:
-      return Object.assign({}, state, { loading: true });
+      return Object.assign({}, state, { currentUserLoading: true });
 
     case USER_SUCCESS:
-      return Object.assign({}, initState, { user: action.user });
+      return Object.assign({}, initState, { user: action.user, currentUserLoading: false });
 
     case USER_ERROR:
       if (action.status !== 401) {
@@ -35,14 +37,18 @@ const user = (state = initState, action) => {
       } else {
         error = false;
       }
-      return Object.assign({}, initState, { error });
+      return Object.assign({}, initState, { error, currentUserLoading: false });
 
     case LOGIN:
     return Object.assign({}, initState, { loading: true });
 
-    case LOGIN_SUCCESS: return Object.assign({}, initState, { user: action.user });
+    case LOGIN_SUCCESS:
+      localStorage.setItem("user", JSON.stringify(action.user));
+      return Object.assign({}, initState, { user: action.user });
 
-    case LOGOUT: return Object.assign({}, initState);
+    case LOGOUT:
+      localStorage.removeItem('user');
+      return Object.assign({}, initState);
 
     case LOGIN_ERROR:
       return Object.assign({}, initState, { error });

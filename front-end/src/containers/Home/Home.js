@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Divider, Header, Icon, Button, Card, Image, Popup } from 'semantic-ui-react';
+import { Loader } from 'evermut';
 import './Home.css';
+import { getInfo } from '../../actions/homeInfo';
 import AddPerson from '../../components/AddPerson';
 import cardiology from '../../static/card.jpg';
 import neurology from '../../static/neur.jpg';
@@ -9,29 +11,28 @@ import oncology from '../../static/onc.jpg';
 import rheumatology from '../../static/rheum.jpg';
 
 class Home extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    props._getInfo(props.user.accessToken, props.user.email);
 
     this.state = {
       openAdd: false,
       type: '',
-      myNurses: [
-        {id: 1, name: "Tom Smith"},
-        {id: 2, name: "Sam Woo"},
-      ],
-      myPatients: [
-        {id: 1, name: "Jerry Asd"},
-        {id: 2, name: "Jerry Asd"},
-        {id: 3, name: "Jerry Asd"},
-        {id: 4, name: "Jerry Asd"},
-      ],
-      departments: [
-        {id: 1, name: "Cardiology", img: cardiology, doctors: 12, nurses: 4, patients: 30, location: 'Somewhere 1', phone: '+123'},
-        {id: 2, name: "Neurology", img: neurology, doctors: 10, nurses: 5, patients: 35, location: 'Somewhere 2', phone: '+145'},
-        {id: 3, name: "Oncology", img: oncology, doctors: 6, nurses: 2, patients: 20, location: 'Somewhere 3', phone: '+234'},
-        {id: 3, name: "Rheumatology", img: rheumatology, doctors: 3, nurses: 1, patients: 15, location: 'Somewhere 4', phone: '+564'}
+      departments: [],
+      imgArray: [
+        { name: "Cardiology", img: cardiology },
+        { name: "Neurology", img: neurology },
+        { name: "Oncology", img: oncology },
+        { name: "Rheumatology", img: rheumatology }
       ]
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.homeLoading && !this.props.homeLoading) {
+      this.getDepartmentImages();
+    }
   }
 
   clickAdd = type => {
@@ -53,7 +54,7 @@ class Home extends Component {
           <Card.Header>{title}</Card.Header>
           <Card.Description>
             {description}
-            <span><Icon name={icon} /> {count}</span>
+            <span><Icon name={icon} /> {count || '-'}</span>
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
@@ -73,15 +74,29 @@ class Home extends Component {
   }
 
   getMyInfo = () => {
-    const { myNurses, myPatients, type, openAdd } = this.state;
+    const { type, openAdd } = this.state;
+    const { NursesUnderMyResponsibility, PatientsUnderMyResponsibility } = this.props.info;
 
     return (
       <div className='myInfo-cards'>
-        {this.getCard('My Nurses', 'Nurses under my responsibility', 'male', myNurses.length, 'nurse')}
-        {this.getCard('My Patients', 'Patients under my responsibility', 'bed', myPatients.length, 'patient')}
+        {this.getCard('My Nurses', 'Nurses under my responsibility', 'male', NursesUnderMyResponsibility, 'nurse')}
+        {this.getCard('My Patients', 'Patients under my responsibility', 'bed', PatientsUnderMyResponsibility, 'patient')}
         {openAdd && <AddPerson type={type} isOpen={openAdd} clicked={() => this.clickAdd()} />}
       </div>
     );
+  }
+
+  getDepartmentImages() {
+    const { imgArray } = this.state;
+    const { AllDepartmentsInfo } = this.props.info;
+
+    const departments = AllDepartmentsInfo.map(item => {
+      const found = imgArray.find(i => i.name === item.name);
+      item.img = found.img;
+      return item
+    })
+
+    this.setState({ departments })
   }
 
   getDepartmentCards() {
@@ -89,8 +104,8 @@ class Home extends Component {
 
     return (
       <div className='departments-cards'>
-        {departments && departments.map((item, index) => {
-          const { id, name, img, doctors, nurses, patients, location, phone } = item;
+        {((departments && departments.map((item, index) => {
+          const { name, img, NumberOfDoctors, NumberOfNurses, NumberOfPatients, location, phoneNumber, headDoctor } = item;
           return (
             <Card className='dept-card' key={`dept-key-${index}`}>
               <Image src={img} wrapped ui={false} size='small'/>
@@ -99,19 +114,19 @@ class Home extends Component {
                 <Card.Description>
                   <div>
                     <Popup
-                      trigger={<span><Icon name='doctor' /> {doctors}</span>}
+                      trigger={<span><Icon name='doctor' /> {NumberOfDoctors}</span>}
                       content='Doctors'
                       position='top center'
                       inverted
                     />
                     <Popup
-                      trigger={<span><Icon name='male' /> {nurses}</span>}
+                      trigger={<span><Icon name='male' /> {NumberOfNurses}</span>}
                       content='Nurses'
                       position='top center'
                       inverted
                     />
                     <Popup
-                      trigger={<span><Icon name='bed' /> {patients}</span>}
+                      trigger={<span><Icon name='bed' /> {NumberOfPatients}</span>}
                       content='Patients'
                       position='top center'
                       inverted
@@ -124,8 +139,14 @@ class Home extends Component {
                     inverted
                   />
                   <Popup
-                    trigger={<div><Icon name='phone' /> {phone}</div>}
+                    trigger={<div><Icon name='phone' /> {phoneNumber}</div>}
                     content='Phone'
+                    position='top left'
+                    inverted
+                  />
+                  <Popup
+                    trigger={<div><Icon name='user circle' /> {headDoctor}</div>}
+                    content='Head Doctor'
                     position='top left'
                     inverted
                   />
@@ -134,11 +155,11 @@ class Home extends Component {
               <Card.Content extra>
                 <div>View</div>
                 <div>
-                  <a href={`/departments/${id}/doctors`}>
+                  <a href={`/departments/${name}/doctors`}>
                     <Icon name='doctor' />
                     Doctors
                   </a>
-                  <a href={`/departments/${id}/nurses`}>
+                  <a href={`/departments/${name}/nurses`}>
                     <Icon name='male' />
                     Nurses
                   </a>
@@ -146,12 +167,14 @@ class Home extends Component {
               </Card.Content>
             </Card>
           );
-        })}
+        })) || <div>No departments</div>)}
       </div>
     );
   }
 
   render () {
+    const { homeLoading, error } = this.props;
+
     return (
       <div className='home'>
         <div className='divider'>
@@ -162,6 +185,7 @@ class Home extends Component {
           <Divider />
         </div>
         {this.getMyInfo()}
+        {error && <div className='error' style={{marginBottom: '15px'}}>{error}</div>}
         <div className='divider'>
           <Header as='h4'>
             <Icon name='building' />
@@ -169,20 +193,22 @@ class Home extends Component {
           </Header>
           <Divider />
         </div>
-        {this.getDepartmentCards()}
+        {(!homeLoading && this.getDepartmentCards()) || <Loader height='400px' />}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  error: state.auth.error,
-  user: state.auth.user
+  user: state.auth.user,
+  error: state.homeInfo.error,
+  info: state.homeInfo.info,
+  homeLoading: state.homeInfo.homeLoading
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    // _login: data => dispatch(login(data)),
+    _getInfo: (token, email) => dispatch(getInfo(token, email)),
   };
 }
 

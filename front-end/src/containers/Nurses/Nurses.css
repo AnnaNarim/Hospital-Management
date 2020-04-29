@@ -41,6 +41,10 @@
 	color: #163C7D!important;
 }
 
-h3, h2 {
+.personal-info th {
+	width: 300px;
+}
+
+h3, h2, table, th {
 	color: #163C7D!important;
 }

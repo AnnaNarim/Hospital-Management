@@ -3,11 +3,11 @@ import { Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { StickyMenu, Logo } from 'evermut';
 import { styleOptions } from '../styleOptions';
-
+import { logout } from '../actions/auth';
 import logo from "../static/logo_light.png";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const { history, path } = rest;
+  const { history, path, _logout } = rest;
   const _onSelect = (to) => {
     history.push(`/${to}`);
   };
@@ -27,25 +27,16 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
         onSelect: () => _onSelect('home'),
         paddingTop: 10
       },
-      active: path.includes("/departments")
+      active: path.includes("/home")
     },
   ];
 
   const secondaryMenu = [
     {
-      name: 'Account',
-      icon: 'people',
-      props: {
-        onSelect: () => history.push('/account'),
-        paddingTop: 10
-      },
-      active: path.includes("account"),
-    },
-    {
       name: 'Log Out',
       icon: 'log-out',
       props: {
-        onSelect: () => history.push('/logout'),
+        onSelect: () => _logout(),
         paddingTop: 10
       },
       active: path.includes("logout")
@@ -53,9 +44,9 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
   ];
 
   const renderComponent = props => {
-    // if (!rest.user.isLoggedIn && !rest.loading) {
-    //   return (<Redirect to="/login" from={`${props.location}`} />);
-    // } else {
+    if (!rest.user.isLoggedIn && !rest.loading) {
+      return (<Redirect to="/login" from={`${props.location}`} />);
+    } else {
       return (
         <div className='protected-route'>
             <StickyMenu
@@ -76,7 +67,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
           </div>
         </div>
       )
-    // }
+    }
   };
 
 
@@ -91,4 +82,10 @@ const mapStateToProps = state => ({
   loading: state.auth.loading
 });
 
-export default withRouter(connect(mapStateToProps, null)(ProtectedRoute));
+function mapDispatchToProps(dispatch) {
+  return {
+    _logout: () => dispatch(logout()),
+  };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProtectedRoute));
