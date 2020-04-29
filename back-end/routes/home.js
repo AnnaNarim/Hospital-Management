@@ -37,7 +37,10 @@ router.get('/myNurses/view/:id', passport.authenticate('jwt', {session:false}) ,
     const nursesPersonalnfo = await nurses.getPersonalInfoOfNurse(req.params.id)
     const numOfNursesDoctors =await nurses.getNumOfDoctorsNurseIsWorkingWith(req.params.id)
     const nursesDoctors = await nurses.listDoctorsOfNurse(req.params.id)
-    res.status(200).json({nursesPersonalnfo,numOfNursesDoctors, WorkingWithDoctors: nursesDoctors})
+    res.status(200).json({
+        nursesPersonalnfo,
+        numOfNursesDoctors, 
+        WorkingWithDoctors: nursesDoctors})
   
 }))
 
@@ -101,7 +104,7 @@ router.get('/departments/doctors/:id', passport.authenticate('jwt', {session:fal
     const numOfPatients =await doctors.numOfPatientsOfDoctor(req.params.id)
     const numberOfNurses =await doctors.numOfNursesOfDoctor(req.params.id)
     res.status(200).json({ 
-        Personalnfo: doctorsPersonalInfo ,
+        PersonaInfo: doctorsPersonalInfo ,
         NumberOfPatients: numOfPatients,
         NumberOfNurses: numberOfNurses
     })
@@ -116,7 +119,7 @@ router.get('/departments/:name/nurses', passport.authenticate('jwt', {session:fa
 }))
 
 router.get('/departments/nurses/:id', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
-    const nursesPersonalInfo =await nurses.nursesPersonalInfo(req.params.id)
+    const nursesPersonalInfo =await nurses.getPersonalInfoOfNurse(req.params.id)
     const WorkingWithDoctors =await nurses.listDoctorsOfNurse(req.params.id)
     res.status(200).json({ 
         Personalnfo: nursesPersonalInfo,
@@ -124,12 +127,6 @@ router.get('/departments/nurses/:id', passport.authenticate('jwt', {session:fals
     })
     
 }))
-
-//my testing router
-// router.get('/test',asyncHandler(async (req,res)=>{
-//     doctors.addNurse(2,3)
-//     res.status(201).send('Nurse is added!')
-// }))
 
 module.exports=router
 

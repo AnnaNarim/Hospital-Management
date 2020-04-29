@@ -20,10 +20,6 @@ module.exports = {
     login: async (email, password) => {
   
         const user= await users.findUserByEmail(email)
-
-        if(!user){ 
-            throw new  EmailIsIncorrect();
-        } 
         
          if(!user.comparePassword(password)){ 
              throw new PasswordIncorrect();

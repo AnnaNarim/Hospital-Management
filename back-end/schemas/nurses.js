@@ -40,6 +40,10 @@ module.exports = (sequelize, DataTypes, doctors) => {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
+        },
+        picture:{
+        type:DataTypes.BLOB('long'),
+        allowNull:false
     }},
         {
         freezeTableName:true,

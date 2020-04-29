@@ -1,6 +1,7 @@
 const bcrypt =require('bcrypt')
 const Sequelize=require('sequelize')
 const  DoctorNotFound = require(`../errors/errors.js`).DoctorNotFound;
+const EmailIsIncorrect = require(`../errors/errors.js`).EmailIsIncorrect;
 
 module.exports = (sequelize, DataTypes, doctors) => {
     
@@ -47,6 +48,9 @@ module.exports = (sequelize, DataTypes, doctors) => {
 
     users.findUserByEmail = async function (user_email) {
         let myUser = await users.findOne({where:{ email: user_email}})
+        if(!myUser){
+            throw new EmailIsIncorrect();
+        }
         user= users.build(myUser)
         user.password =myUser.password
         return user

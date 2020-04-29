@@ -7,7 +7,8 @@ const cors = require('cors');
 const http = require('http').Server(app);
 const passport = require('passport');
 require('./passport/passport')(passport)
-const {DoctorNotFound, UserAlreadyExists,EmailIsIncorrect, PasswordIncorrect,IncorrectNurse} =require('./errors/errors')
+const {EmailIsIncorrect, PasswordIncorrect,IncorrectNurse} =require('./errors/errors')
+
 app.use(cors());
 
 app.use(passport.initialize());
@@ -23,12 +24,9 @@ app.use((err, req, res, next) => {
     console.log(`Error on server! => ${err.message}`);
     let status = 500;
     switch (true) {
-    case err instanceof UserAlreadyExists :
-      status = 409;
-      break;
     case err instanceof EmailIsIncorrect :
-        status = 401;
-        break;
+      status = 404;
+      break;
     case err instanceof PasswordIncorrect :
       status = 401;
       break;
@@ -36,10 +34,10 @@ app.use((err, req, res, next) => {
       status = 400;
       break;
   }
-  res.status(status).send(err.message);
+  res.status(status).json(err.message);
 })
 
-app.listen(3000, () => {
+app.listen(3030, () => {
     console.log('Server successfully started!');
 });
 
