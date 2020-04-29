@@ -30,13 +30,16 @@ module.exports = (sequelize, DataTypes) => {
             validate: { isEmail: true }
         },
         city:{
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull:false
         },
         streetName:{
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull:false
         },
         apartmentNumber:{
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull:false
         },
         roomNumber:{
             type: DataTypes.STRING,
@@ -48,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
             unique: true
         },
         picture:{
-            type:DataTypes.BLOB('long'),
+            type:DataTypes.STRING,
             allowNull:false
         }
     },

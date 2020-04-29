@@ -104,7 +104,7 @@ router.get('/departments/doctors/:id', passport.authenticate('jwt', {session:fal
     const numOfPatients =await doctors.numOfPatientsOfDoctor(req.params.id)
     const numberOfNurses =await doctors.numOfNursesOfDoctor(req.params.id)
     res.status(200).json({ 
-        PersonaInfo: doctorsPersonalInfo ,
+        PersonalInfo: doctorsPersonalInfo ,
         NumberOfPatients: numOfPatients,
         NumberOfNurses: numberOfNurses
     })
@@ -122,7 +122,7 @@ router.get('/departments/nurses/:id', passport.authenticate('jwt', {session:fals
     const nursesPersonalInfo =await nurses.getPersonalInfoOfNurse(req.params.id)
     const WorkingWithDoctors =await nurses.listDoctorsOfNurse(req.params.id)
     res.status(200).json({ 
-        Personalnfo: nursesPersonalInfo,
+        PersonalInfo: nursesPersonalInfo,
         WorkingWithDoctors: WorkingWithDoctors
     })
     
