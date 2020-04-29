@@ -34,11 +34,11 @@ router.get('/myNurses/view', passport.authenticate('jwt', {session:false}) , asy
 
 //vieing info of nurse
 router.get('/myNurses/view/:id', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
-    const nursesPersonalnfo = await nurses.getPersonalInfoOfNurse(req.params.id)
+    const nursesPersonalInfo = await nurses.getPersonalInfoOfNurse(req.params.id)
     const numOfNursesDoctors =await nurses.getNumOfDoctorsNurseIsWorkingWith(req.params.id)
     const nursesDoctors = await nurses.listDoctorsOfNurse(req.params.id)
     res.status(200).json({
-        nursesPersonalnfo,
+        nursesPersonalInfo,
         numOfNursesDoctors, 
         WorkingWithDoctors: nursesDoctors})
   
@@ -73,10 +73,10 @@ router.get('/myPatients/view', passport.authenticate('jwt', {session:false}) , a
 
 //viewing specific patient
 router.get('/myPatients/view/:id', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
-    const patientsPersonalnfo = await patients.getPersonalInfoOfPatient(req.params.id)
+    const patientsPersonalInfo = await patients.getPersonalInfoOfPatient(req.params.id)
     const numOfPatientsDoctors =await patients.getNumOfDoctorsCuringPatient(req.params.id)
     const doctorsAndTreatmentsOfPatient = await patients.listingDoctorsAndTreatmentsOfPatient(req.params.id)
-    res.status(200).json({patientsPersonalnfo, numOfPatientsDoctors, doctorsAndTreatmentsOfPatient})
+    res.status(200).json({patientsPersonalInfo, numOfPatientsDoctors, doctorsAndTreatmentsOfPatient})
   
 }))
 
