@@ -19,9 +19,9 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br />
 The app is ready to be deployed!
 
-### `node app.js`
+### `npm run server`
 
-Runs the server side of the front-end.
+Runs the server side of the front-end on [http://localhost:3003](http://localhost:3003).
 
 ### Technologies used
 
