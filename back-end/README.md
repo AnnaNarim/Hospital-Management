@@ -3,23 +3,23 @@
 <h2>Folder Structure</h2>
 
 <ul>
-  <li>schemas</li> - definintion of schemas and relationships among them
+  <li>schemas - definintion of schemas and relationships among them</li> 
   <ul>
-     <li>department.js, doctors.js, doctorsNurses.js, headDoctors.js, nurses.js, patients.js,treatment.js, users.js</li> - defining raw schemas (tables) with their specific attributes i.e. without any foreignKeys
-     <li>db.js</li> - defining all relationships between tables and sync-ing them
-     <li>dataInsertsInHospital.sql</li> - admin side, inserting data in tables
+     <li>department.js, doctors.js, doctorsNurses.js, headDoctors.js, nurses.js, patients.js,treatment.js, users.js - defining raw schemas (tables) with their specific attributes i.e. without any foreignKeys</li> 
+     <li>db.js  - defining all relationships between tables and sync-ing them</li>
+     <li>dataInsertsInHospital.sql - admin side, inserting data in tables</li> 
   </ul>
-  <li>services</li> - main services used for fetching needed information about hospital
+  <li>services - main services used for fetching needed information about hospital</li> 
    <ul>
-     <li>department.js, doctors.js, nurses.js, patients.js</li> - the main functions which are called for showing information about hospital for doctor in font-end
-     <li>users.js</li> -  singup and login (with JWT)
+     <li>department.js, doctors.js, nurses.js, patients.js- the main functions which are called for showing information about hospital for doctor in font-end</li> 
+     <li>users.js  -  singup and login (with JWT)</li>
    </ul>
-  <li>passport</li> - creating part of authentication 
-  <li>errors</li> - separatly defining the errors which can be thrown 
+  <li>passport- creating part of authentication </li> 
+  <li>errors - separatly defining the errors which can be thrown </li> 
   <li>routes</li> - routing
    <ul>
-     <li>users.js</li> - endpoints for login page
-     <li>home.js</li> -  endpoints after login
+     <li>users.js - endpoints for login page</li> 
+     <li>home.js -  endpoints after login</li> 
    </ul>
-  <li>server.js</li> - runnin server side of the bak-end on [http://localhost:3030](http://localhost:3030)
+  <li>server.js- running server side of the bak-end on [http://localhost:3030](http://localhost:3030)</li> 
 </ul>
