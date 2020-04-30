@@ -1,4 +1,19 @@
-## Technologies used
+<h1>Hospital-managment back-End</h1>
+
+In the project directory you can run: 
+
+### node server.js
+
+Runs the server side of the back-end on [http://localhost:3030](http://localhost:3030) 
+
+<h2>Technologies Used</h2>
+
+<ul>
+  <li>Server side is Node.js with Express library</li>
+  <li>Sequelize is used as Node js ORM for mapping information between database (MySQL) and JS</li>
+  <li>Passport (authentication middleware for Node.js) and  JSON Web Token are used for authenitication</li>
+  <li>MySQL is used as Database</li>
+</ul>
 
 <h2>Folder Structure</h2>
 
@@ -21,5 +36,6 @@
      <li>users.js - endpoints for login page</li> 
      <li>home.js -  endpoints after login</li> 
    </ul>
-  <li>server.js- running server side of the bak-end on [http://localhost:3030](http://localhost:3030)</li> 
+  <li>server.js- running server side of the bak-end</li> 
+  <li>tests- some unit tests for testing the work of services </li> 
 </ul>
