@@ -1,4 +1,4 @@
-<h1>Hospital-managment back-End</h1>
+<h1>Hospital-managment back-end</h1>
 
 In the project directory you can run: 
 
@@ -29,7 +29,7 @@ Runs the server side of the back-end on [http://localhost:3030](http://localhost
      <li>department.js, doctors.js, nurses.js, patients.js- the main functions which are called for showing information about hospital for doctor in font-end</li> 
      <li>users.js  -  singup and login (with JWT)</li>
    </ul>
-  <li>passport- creating part of authentication </li> 
+  <li>passport - creating part of authentication </li> 
   <li>errors - separatly defining the errors which can be thrown </li> 
   <li>routes</li>
    <ul>
@@ -37,5 +37,5 @@ Runs the server side of the back-end on [http://localhost:3030](http://localhost
      <li>home.js -  endpoints after login</li> 
    </ul>
   <li>server.js- running server side of the bak-end</li> 
-  <li>tests- some unit tests for testing the work of services </li> 
+  <li>tests - some unit tests for testing the work of services </li> 
 </ul>
