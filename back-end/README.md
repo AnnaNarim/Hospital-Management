@@ -2,11 +2,9 @@
 
 In the project directory you can run: 
 
-<code>node server.js</code>
+<code>node server.js</code> - this will the server side of the back-end on [http://localhost:3030](http://localhost:3030).
 
-This will the server side of the back-end on [http://localhost:3030](http://localhost:3030) .
-For runing the unit tests, you can run:
-<code>npm test</code>
+For runing the unit tests, you can run: <code>npm test</code>
 
 <h2>Technologies Used</h2>
 
