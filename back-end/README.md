@@ -9,14 +9,14 @@
      <li>db.js  - defining all relationships between tables and sync-ing them</li>
      <li>dataInsertsInHospital.sql - admin side, inserting data in tables</li> 
   </ul>
-  <li>services - main services used for fetching needed information about hospital</li> 
+  <li>services - main services used for fetching needed information about hospital which doctor will need to see anf edit</li> 
    <ul>
      <li>department.js, doctors.js, nurses.js, patients.js- the main functions which are called for showing information about hospital for doctor in font-end</li> 
      <li>users.js  -  singup and login (with JWT)</li>
    </ul>
   <li>passport- creating part of authentication </li> 
   <li>errors - separatly defining the errors which can be thrown </li> 
-  <li>routes</li> - routing
+  <li>routes</li>
    <ul>
      <li>users.js - endpoints for login page</li> 
      <li>home.js -  endpoints after login</li> 
