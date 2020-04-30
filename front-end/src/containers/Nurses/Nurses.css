@@ -1,5 +1,6 @@
 .component {
 	display: flex;
+	height: 100vh;
 }
 
 .single-person-content {
@@ -8,6 +9,7 @@
 	height: 100%;
 	background-color: white;
 	padding: 30px;
+	overflow: auto;
 }
 
 .single-person-content img {

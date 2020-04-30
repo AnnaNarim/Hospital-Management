@@ -6,8 +6,6 @@ import { getMyPatients, getIndividualPatient } from '../../actions/myPatients';
 import '../Nurses/Nurses.css';
 import './Patients.css';
 
-import patientPic from '../../static/patient1.jpg';
-
 class Patients extends Component {
 	constructor(props) {
 		super(props);
@@ -19,30 +17,7 @@ class Patients extends Component {
     patientId && _getIndividualPatient(user.accessToken, patientId);
 
 		this.state = {
-			list: [
-        {id: 1, name: "Betty Smith"},
-        {id: 2, name: "Poghos Petros"},
-      ],
-      singlePerson: {
-        id: 1,
-        name: "Betty Smith",
-        img: patientPic,
-        phone: '+12312312',
-        email: 'betty.smith@gmail.com',
-        department: 'Cardiology',
-        treatments: 3,
-      },
-      singlePersonTreatments: [
-        {
-          date: '01/03/2020',
-          treatment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-        },
-        {
-          date: '05/02/2020',
-          treatment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-        },
-      ],
-      selected: patientId && parseInt(patientId, 10),
+      selected: (patientId && parseInt(patientId, 10)) || '',
       openDelete: false
 		}
 	}
@@ -52,14 +27,14 @@ class Patients extends Component {
     const { user, history, myPatients, _getIndividualPatient } = this.props;
     const { params } = this.props.match;
 
-    if(!prevProps.myPatients.length && myPatients.length && !params.patientId) {
+    if(myPatients.length && !params.patientId) {
       history.push(`/my/patients/${myPatients[0].id}`);
       _getIndividualPatient(user.accessToken, myPatients[0].id);
       this.setState({ selected: myPatients[0].id })
     }
     if (match.params.patientId !== params.patientId) {
       _getIndividualPatient(user.accessToken, params.patientId);
-      this.setState({ selected: parseInt(params.nurseId, 10) })
+      this.setState({ selected: parseInt(params.patientId, 10) })
     }
   }
 
@@ -70,7 +45,7 @@ class Patients extends Component {
   }
 
   selectItem(id) {
-    const { user, match } = this.props;
+    const { user } = this.props;
 
     this.setState({ selected: id });
     this.props.history.push(`/my/patients/${id}`);
@@ -84,32 +59,31 @@ class Patients extends Component {
   }
 
   getPeronalInfo(info) {
-    const { singlePerson } = this.state;
-    const { phone, email } = singlePerson;
+    const { phoneNumber, email, streetName, apartmentNumber, city, DOB } = info;
 
     return (
       <div className='personal-info'>
-        <div><Icon name='phone' /> {info.phoneNumber}</div>
-        <div><Icon name='at' /> {info.email}</div>
-        <div><Icon name='point' /> str. {info.streetName} {info.apartmentNumber}, {info.city}</div>
-        <div><Icon name='birthday cake' /> {info.DOB}</div>
+        <div><Icon name='phone' /> {phoneNumber}</div>
+        <div><Icon name='at' /> {email}</div>
+        <div><Icon name='point' /> str. {streetName} {apartmentNumber}, {city}</div>
+        <div><Icon name='birthday cake' /> {DOB}</div>
       </div>
     );
   }
 
   getTreatmentsInfo(treatments, numberOfDoctors) {
-    const { singlePersonTreatments } = this.state;
-
     return (
       <div className='personal-info'>
-        <div>Getting treatments from {numberOfDoctors} doctors.</div>
+        <div style={{ marginBottom: '15px'}}>Getting treatments from {numberOfDoctors} doctors.</div>
         {treatments.map((item, index) => {
           const { start_date, note, DoctorName } = item;
 
           return (
             <div className='treatments' key={`patient-treat-${index}`}>
-              <div><Icon name='calendar alternate' /> {start_date}</div>
-              <div><Icon name='doctor' /> {DoctorName}</div>
+              <div>
+                <span style={{ marginRight: '30px'}}><Icon name='calendar alternate' /> {start_date}</span>
+                <span><Icon name='doctor' /> {DoctorName}</span>
+              </div>
               <div>{note || "Note"}</div>
             </div>
           );
@@ -125,7 +99,6 @@ class Patients extends Component {
   }
 
   _delete() {
-    // 
     console.log('delete patient')
   }
 
@@ -149,7 +122,7 @@ class Patients extends Component {
   }
 
   getContent() {
-    const { singlePerson, selected } = this.state;
+    const { selected } = this.state;
     const { singlePatient } = this.props;
 
     return (selected && Object.keys(singlePatient).length) ? (

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LeftSideList, Loader } from 'evermut';
-import { Header, Image, Divider, Icon, Table } from 'semantic-ui-react';
+import { Header, Image, Divider, Icon, Table, Modal, Button } from 'semantic-ui-react';
 import { getMyNurses, getIndividualNurse } from '../../actions/myNurses';
 import '../Nurses/Nurses.css';
-
-// import nurse1 from '../../static/nurse1.jpg';
 
 class DepartmentNurses extends Component {
   constructor(props) {
@@ -18,7 +16,8 @@ class DepartmentNurses extends Component {
     nurseId && _getIndividualNurse(user.accessToken, nurseId);
 
     this.state = {
-      selected: nurseId && parseInt(nurseId, 10)
+      selected: (nurseId && parseInt(nurseId, 10)) || '',
+      openDelete: false
     }
   }
 
@@ -27,7 +26,7 @@ class DepartmentNurses extends Component {
     const { user, history, myNurses, _getIndividualNurse } = this.props;
     const { params } = this.props.match;
 
-    if(!prevProps.myNurses.length && myNurses.length && !params.nurseId) {
+    if(myNurses.length && !params.nurseId) {
       history.push(`/my/nurses/${myNurses[0].id}`);
       _getIndividualNurse(user.accessToken, myNurses[0].id);
       this.setState({ selected: myNurses[0].id })
@@ -45,11 +44,40 @@ class DepartmentNurses extends Component {
   }
 
   selectItem(id) {
-    const { user, match } = this.props;
+    const { user } = this.props;
 
     this.setState({ selected: id });
     this.props.history.push(`/my/nurses/${id}`);
     this.props._getIndividualNurse(user.accessToken, id);
+  }
+
+  handleDeleteModal() {
+    const { openDelete } = this.state;
+
+    this.setState({ openDelete: !openDelete });
+  }
+
+  _delete() {
+    console.log('delete patient')
+  }
+
+  getDeleteModal() {
+    const { openDelete } = this.state;
+    return (
+      <Modal open={openDelete} size='tiny' onClose={() => this.handleDeleteModal()}>
+        <Modal.Header>Delete the patient. </Modal.Header>
+        <Modal.Content>
+          <Modal.Description>
+            <div>Are you sure you want to remove this nurse from your list?</div>
+            <Button
+              color='red'
+              onClick={() => this._delete()}
+            >Delete</Button>
+            <Button onClick={() => this.handleDeleteModal()}>Cancel</Button>
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
+    );
   }
 
   _getLeftSideListHeader = (item) =>  {
@@ -59,12 +87,14 @@ class DepartmentNurses extends Component {
   }
 
   getPersonalInfo(info) {
+    const { phoneNumber, email, streetName, apartmentNumber, city, DOB } = info;
+
     return (
       <div className='personal-info'>
-        <div><Icon name='phone' /> {info.phoneNumber}</div>
-        <div><Icon name='at' /> {info.email}</div>
-        <div><Icon name='point' /> str. {info.streetName} {info.apartmentNumber}, {info.city}</div>
-        <div><Icon name='birthday cake' /> {info.DOB}</div>
+        <div><Icon name='phone' /> {phoneNumber}</div>
+        <div><Icon name='at' /> {email}</div>
+        <div><Icon name='point' /> str. {streetName} {apartmentNumber}, {city}</div>
+        <div><Icon name='birthday cake' /> {DOB}</div>
       </div>
     );
   }
@@ -95,7 +125,6 @@ class DepartmentNurses extends Component {
   getContent() {
     const { selected } = this.state;
     const { singleNurse } = this.props;
-    // <Image src={nurse1} size='small' />
 
     return (selected && Object.keys(singleNurse).length) ? (
       <div className='single-person-content'>
@@ -104,7 +133,9 @@ class DepartmentNurses extends Component {
             <Image src={singleNurse.nursesPersonalInfo[0].picture} size='small' />
             <Header as='h2'>{singleNurse.nursesPersonalInfo[0].firstName} {singleNurse.nursesPersonalInfo[0].lastName} {singleNurse.nursesPersonalInfo[0].middleName}</Header>
           </div>
+          <Button basic color='red' content='Delete' onClick={() => this.handleDeleteModal()}/>
         </div>
+        {this.getDeleteModal()}
         <Divider />
         <Header as='h3'>
           <Icon name='user circle' />
