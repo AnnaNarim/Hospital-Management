@@ -1,6 +1,7 @@
 const Sequelize=require('sequelize')
 const doctors=require('../schemas/db').doctors
 const doctorsNurses=require('../schemas/db').doctorsNurses
+const patients= require('../schemas/db').patients
 const treatments =require('../schemas/db').treatments
 const IncorrectNurse= require('../errors/errors').IncorrectNurse
 const Op=Sequelize.Op
