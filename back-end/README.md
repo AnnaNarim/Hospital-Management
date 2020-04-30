@@ -2,17 +2,17 @@
 
 In the project directory you can run: 
 
-### node server.js
+<code>node server.js</code>
 
 Runs the server side of the back-end on [http://localhost:3030](http://localhost:3030) 
 
 <h2>Technologies Used</h2>
 
 <ul>
-  <li>Server side is Node.js with Express library</li>
-  <li>Sequelize is used as Node js ORM for mapping information between database (MySQL) and JS</li>
-  <li>Passport (authentication middleware for Node.js) and  JSON Web Token are used for authenitication</li>
-  <li>MySQL is used as Database</li>
+  <li>Server side is <a href="https://github.com/nodejs">Node.js</a> with <a href=https://github.com/expressjs/express>Express</a> library</li>
+  <li><a href="https://sequelize.org/">Sequelize</a> is used as Node js ORM for mapping information between database (MySQL) and JS</li>
+  <li><a href="http://www.passportjs.org/">Passport</a> (authentication middleware for Node.js) and <a href="https://jwt.io/JSON "> JWT Web Token</a> are used for authenitication</li>
+  <li>MySQL is used as Relational Database</li>
 </ul>
 
 <h2>Folder Structure</h2>
