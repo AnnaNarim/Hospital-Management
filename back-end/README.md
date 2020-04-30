@@ -9,10 +9,10 @@ Runs the server side of the back-end on [http://localhost:3030](http://localhost
 <h2>Technologies Used</h2>
 
 <ul>
-  <li>Server side is <a href="https://github.com/nodejs">Node.js</a> with <a href=https://github.com/expressjs/express>Express</a> library</li>
-  <li><a href="https://sequelize.org/">Sequelize</a> is used as Node js ORM for mapping information between database (MySQL) and JS</li>
+  <li>Server side is <a href="https://github.com/nodejs">Node.js</a> with <a href=https://github.com/expressjs/express>Express</a> framework</li>
+  <li><a href="https://sequelize.org/">Sequelize</a> is used as Node js ORM for mapping information between database (MySQL) and Node.js</li>
   <li><a href="http://www.passportjs.org/">Passport</a> (authentication middleware for Node.js) and <a href="https://jwt.io/JSON "> JWT Web Token</a> are used for authenitication</li>
-  <li>MySQL is used as Relational Database</li>
+  <li>MySQL is used as Relational Database management system</li>
 </ul>
 
 <h2>Folder Structure</h2>
@@ -24,7 +24,7 @@ Runs the server side of the back-end on [http://localhost:3030](http://localhost
      <li>db.js  - defining all relationships between tables and sync-ing them</li>
      <li>dataInsertsInHospital.sql - admin side, inserting data in tables</li> 
   </ul>
-  <li>services - main services used for fetching needed information about hospital which doctor will need to see anf edit</li> 
+  <li>services - main services used for fetching needed information about hospital which doctor will need to see and edit</li> 
    <ul>
      <li>department.js, doctors.js, nurses.js, patients.js- the main functions which are called for showing information about hospital for doctor in font-end</li> 
      <li>users.js  -  singup and login (with JWT)</li>
