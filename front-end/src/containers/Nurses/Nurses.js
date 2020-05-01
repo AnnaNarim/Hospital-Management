@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LeftSideList, Loader } from 'evermut';
 import { Header, Image, Divider, Icon, Table, Modal, Button } from 'semantic-ui-react';
-import { getMyNurses, getIndividualNurse } from '../../actions/myNurses';
+import { getMyNurses, getIndividualNurse, individualNurseDelete, resetIndicatorsNurse } from '../../actions/myNurses';
 import '../Nurses/Nurses.css';
 
 class DepartmentNurses extends Component {
@@ -22,11 +22,11 @@ class DepartmentNurses extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match } = prevProps;
-    const { user, history, myNurses, _getIndividualNurse } = this.props;
+    const { match, deleteNurseLoading } = prevProps;
+    const { user, history, myNurses, _getIndividualNurse, error, _getMyNurses } = this.props;
     const { params } = this.props.match;
 
-    if(myNurses.length && !params.nurseId) {
+    if((myNurses.length !== prevProps.myNurses.length) && !params.nurseId) {
       history.push(`/my/nurses/${myNurses[0].id}`);
       _getIndividualNurse(user.accessToken, myNurses[0].id);
       this.setState({ selected: myNurses[0].id })
@@ -34,6 +34,13 @@ class DepartmentNurses extends Component {
     if (match.params.nurseId !== params.nurseId) {
       _getIndividualNurse(user.accessToken, params.nurseId);
       this.setState({ selected: parseInt(params.nurseId, 10) })
+    }
+    if (deleteNurseLoading && !this.props.deleteNurseLoading && !error) {
+      setTimeout(() => {
+        this.closeDeleteModal()
+        _getMyNurses(user.accessToken)
+        this.props.history.push('/my/nurses')
+      }, 1000)
     }
   }
 
@@ -51,29 +58,39 @@ class DepartmentNurses extends Component {
     this.props._getIndividualNurse(user.accessToken, id);
   }
 
-  handleDeleteModal() {
-    const { openDelete } = this.state;
+  openDeleteModal() {
+    this.setState({ openDelete: true });
+  }
 
-    this.setState({ openDelete: !openDelete });
+  closeDeleteModal() {
+    this.props._resetIndicatorsNurse()
+    this.setState({ openDelete: false });
   }
 
   _delete() {
-    console.log('delete patient')
+    const { selected } = this.state;
+    const { user, _individualNurseDelete } = this.props;
+    _individualNurseDelete(user.accessToken, selected);
   }
 
   getDeleteModal() {
     const { openDelete } = this.state;
+    const { error, deleteNurseLoading, message } = this.props;
+
     return (
-      <Modal open={openDelete} size='tiny' onClose={() => this.handleDeleteModal()}>
-        <Modal.Header>Delete the patient. </Modal.Header>
+      <Modal open={openDelete} size='tiny' onClose={() => this.closeDeleteModal()}>
+        <Modal.Header>Delete the nurse. </Modal.Header>
         <Modal.Content>
           <Modal.Description>
+            {error && <div className='error'>{error}</div>}
+            {message && <div className='message'>{message}</div>}
             <div>Are you sure you want to remove this nurse from your list?</div>
             <Button
               color='red'
               onClick={() => this._delete()}
+              loading={deleteNurseLoading}
             >Delete</Button>
-            <Button onClick={() => this.handleDeleteModal()}>Cancel</Button>
+            <Button onClick={() => this.closeDeleteModal()}>Cancel</Button>
           </Modal.Description>
         </Modal.Content>
       </Modal>
@@ -127,13 +144,14 @@ class DepartmentNurses extends Component {
     const { singleNurse } = this.props;
 
     return (selected && Object.keys(singleNurse).length) ? (
+      singleNurse.nursesPersonalInfo.length && (
       <div className='single-person-content'>
         <div>
           <div>
             <Image src={singleNurse.nursesPersonalInfo[0].picture} size='small' />
             <Header as='h2'>{singleNurse.nursesPersonalInfo[0].firstName} {singleNurse.nursesPersonalInfo[0].lastName} {singleNurse.nursesPersonalInfo[0].middleName}</Header>
           </div>
-          <Button basic color='red' content='Delete' onClick={() => this.handleDeleteModal()}/>
+          <Button basic color='red' content='Delete' onClick={() => this.openDeleteModal()}/>
         </div>
         {this.getDeleteModal()}
         <Divider />
@@ -148,7 +166,7 @@ class DepartmentNurses extends Component {
         </Header>
         {this.getHospitalInfo(singleNurse.WorkingWithDoctors)}
       </div>
-    ) : null;
+    )) : null;
   }
 
   getView() {
@@ -185,13 +203,18 @@ const mapStateToProps = state => ({
   myNurses: state.myNurses.myNurses,
   myNursesLoading: state.myNurses.myNursesLoading,
   singleNurseLoading: state.myNurses.singleNurseLoading,
+  deleteNurseLoading: state.myNurses.deleteNurseLoading,
   singleNurse: state.myNurses.singleNurse,
+  message: state.myNurses.message,
+  error: state.myNurses.errorDelete,
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     _getMyNurses: token => dispatch(getMyNurses(token)),
     _getIndividualNurse: (token, id) => dispatch(getIndividualNurse(token, id)),
+    _individualNurseDelete: (token, id) => dispatch(individualNurseDelete(token, id)),
+    _resetIndicatorsNurse: () => dispatch(resetIndicatorsNurse()),
   };
 }
 

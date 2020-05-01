@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LeftSideList, Loader } from 'evermut';
-import { Header, Image, Divider, Button, Icon, Modal } from 'semantic-ui-react';
+import { Header, Image, Divider, Icon } from 'semantic-ui-react';
 import { getMyPatients, getIndividualPatient } from '../../actions/myPatients';
 import '../Nurses/Nurses.css';
 import './Patients.css';
@@ -18,7 +18,6 @@ class Patients extends Component {
 
 		this.state = {
       selected: (patientId && parseInt(patientId, 10)) || '',
-      openDelete: false
 		}
 	}
 
@@ -76,7 +75,7 @@ class Patients extends Component {
       <div className='personal-info'>
         <div style={{ marginBottom: '15px'}}>Getting treatments from {numberOfDoctors} doctors.</div>
         {treatments.map((item, index) => {
-          const { start_date, note, DoctorName } = item;
+          const { start_date, notes, DoctorName } = item;
 
           return (
             <div className='treatments' key={`patient-treat-${index}`}>
@@ -84,40 +83,11 @@ class Patients extends Component {
                 <span style={{ marginRight: '30px'}}><Icon name='calendar alternate' /> {start_date}</span>
                 <span><Icon name='doctor' /> {DoctorName}</span>
               </div>
-              <div>{note || "Note"}</div>
+              <div>{notes || "-"}</div>
             </div>
           );
         }) || null}
       </div>
-    );
-  }
-
-  handleDeleteModal() {
-    const { openDelete } = this.state;
-
-    this.setState({ openDelete: !openDelete });
-  }
-
-  _delete() {
-    console.log('delete patient')
-  }
-
-  getDeleteModal() {
-    const { openDelete } = this.state;
-    return (
-      <Modal open={openDelete} size='tiny' onClose={() => this.handleDeleteModal()}>
-        <Modal.Header>Delete the patient. </Modal.Header>
-        <Modal.Content>
-          <Modal.Description>
-            <div>Are you sure you want to remove this patient from your list?</div>
-            <Button
-              color='red'
-              onClick={() => this._delete()}
-            >Delete</Button>
-            <Button onClick={() => this.handleDeleteModal()}>Cancel</Button>
-          </Modal.Description>
-        </Modal.Content>
-      </Modal>
     );
   }
 
@@ -132,9 +102,7 @@ class Patients extends Component {
             <Image src={singlePatient.patientsPersonalInfo[0].picture} size='small' />
             <Header as='h2'>{singlePatient.patientsPersonalInfo[0].firstName} {singlePatient.patientsPersonalInfo[0].lastName}</Header>
           </div>
-          <Button basic color='red' content='Delete' onClick={() => this.handleDeleteModal()}/>
         </div>
-        {this.getDeleteModal()}
         <Divider />
         <Header as='h3'>
           <Icon name='user circle' />

@@ -33,6 +33,9 @@ class Home extends Component {
     if(prevProps.homeLoading && !this.props.homeLoading) {
       this.getDepartmentImages();
     }
+    if(prevProps.addLoading && !this.props.addLoading && !this.props.errorNurse) {
+      setTimeout(this.props._getInfo(this.props.user.accessToken, this.props.user.email), 2000);
+    }
   }
 
   clickAdd = type => {
@@ -75,13 +78,13 @@ class Home extends Component {
 
   getMyInfo = () => {
     const { type, openAdd } = this.state;
-    const { NursesUnderMyResponsibility, PatientsUnderMyResponsibility } = this.props.info;
+    const { NursesUnderMyResponsibility, PatientsUnderMyResponsibility, AllDepartmentsInfo } = this.props.info;
 
     return (
       <div className='myInfo-cards'>
         {this.getCard('My Nurses', 'Nurses under my responsibility', 'male', NursesUnderMyResponsibility, 'nurse')}
         {this.getCard('My Patients', 'Patients under my responsibility', 'bed', PatientsUnderMyResponsibility, 'patient')}
-        {openAdd && <AddPerson type={type} isOpen={openAdd} clicked={() => this.clickAdd()} />}
+        {openAdd && <AddPerson type={type} isOpen={openAdd} departments={AllDepartmentsInfo} cancel={(type) => this.clickAdd(type)} />}
       </div>
     );
   }
@@ -203,7 +206,9 @@ const mapStateToProps = state => ({
   user: state.auth.user,
   error: state.homeInfo.error,
   info: state.homeInfo.info,
-  homeLoading: state.homeInfo.homeLoading
+  homeLoading: state.homeInfo.homeLoading,
+  addLoading: state.myNurses.addLoading,
+  errorNurse: state.myNurses.error,
 });
 
 function mapDispatchToProps(dispatch) {

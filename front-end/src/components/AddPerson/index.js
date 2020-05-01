@@ -1,114 +1,103 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Header, Button, Input, Dropdown, TextArea, Form, Image } from 'semantic-ui-react';
-import { styleOptions } from '../../styleOptions';
+import { Modal, Button, Input, Dropdown, TextArea, Form } from 'semantic-ui-react';
+import { getNursesOfDepartments, addNurse, resetIndicatorsNurse } from '../../actions/myNurses'
+import { getEmailsOfPatients, addPatient, resetIndicatorsPatient } from '../../actions/myPatients.js'
 import './AddPerson.css';
 
+const TIME_OUT = 1500;
+
 class LogIn extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    if(props.type === 'patient') {
+      props._getEmailsOfPatients(props.user.accessToken)
+    }
 
     this.state = {
-      departments: [
-        {id: 1, name: "Cardiology", doctors: 12, nurses: 4, patients: 30},
-        {id: 2, name: "Neurology", doctors: 10, nurses: 5, patients: 35},
-        {id: 3, name: "Oncology", doctors: 6, nurses: 2, patients: 20},
-        {id: 3, name: "Rheumatology", doctors: 3, nurses: 1, patients: 15}
-      ],
-      patients: [
-        {id: 1, email: "asd@asd.asda"},
-        {id: 2, email: "aaaaaaa@asd.asda"},
-        {id: 3, email: "qqqsd@asd.asda"},
-      ],
-      nurses: [
-        {id: 1, name: "Anna Smith"},
-        {id: 2, name: "Vivian John"},
-        {id: 3, name: "Sam Pitt"},
-      ],
+      departments: props.departments,
+      dateValidation: false,
       valueDepart: '',
       valueNurse: '',
       valuePatient: '',
-      firstName: '',
-      lastName: '',
-      phone: '',
       email: '',
-      treat: '',
+      date: '',
+      notes: '',
     }
   }
-  clicked() {
-    const { clicked } = this.props;
 
-    if(clicked) clicked();
+  componentDidUpdate(prevProps) {
+    if(prevProps.addLoading && !this.props.addLoading && !this.props.errorNurse) {
+      setTimeout(() => this.cancel(), TIME_OUT);
+    }
+    if(prevProps.addPatientLoading && !this.props.addPatientLoading && !this.props.errorPatient) {
+      setTimeout(() => this.cancel(), TIME_OUT);
+    }
+  }
+
+  cancel() {
+    const { type, cancel, _resetIndicatorsNurse, _resetIndicatorsPatient } = this.props;
+
+    if(type === 'nurse') _resetIndicatorsNurse();
+    if(type === 'patient') _resetIndicatorsPatient();
+    if(cancel) cancel();
   }
 
   handleChange(e, item, where) {
-    console.log('handleChange', item.value)
-    // call department's nurses by providing department id - item.value
+    const { user } = this.props;
 
     this.setState({ [where]: item.value})
+    if(where === 'valueDepart') {
+      this.props._getNursesOfDepartments(user.accessToken, item.value)
+    }
   }
 
-  _add() {
-    // call add function from actions to which I will give you depart, nurse id and after it nurses of my info wil ++
-    this.clicked()
+  addNewNurse() {
+    const { user } = this.props;
+    const { valueNurse } = this.state;
+
+    this.props._resetIndicatorsNurse()
+    this.props._addNurse(user.accessToken, valueNurse)
   }
 
-  getNurseModal() {
-    const { departments, nurses, valueDepart, valueNurse } = this.state;
-    const { nursesLoading, addLoading, type } = this.props;
+  addNewPatient() {
+    const { user } = this.props;
+    const { valuePatient, date, notes } = this.state;
 
+    this.props._resetIndicatorsPatient()
+    this.props._addPatient(user.accessToken, valuePatient, {startDate: date, treatment: notes })
+  }
+
+  getDepartmentsNames() {
+    const { departments, valueDepart } = this.state;
     const onlyDepNames = departments.map(item => {
       return   {
         key: item.name,
         text: item.name,
-        value: item.id
-      }
-    });
-
-    const onlyNursesNames = nurses.map(item => {
-      return   {
-        key: item.name,
-        text: item.name,
-        value: item.id
+        value: item.name
       }
     });
 
     return (
-      <Modal.Description>
-        {this.getDepartmentsNames()}
-        <p> Select the {type}.</p>
+      <React.Fragment>
+        <p> Choose the department to where the nurse belongs.</p>
         <Dropdown
-          placeholder={`Select ${type}`}
+          placeholder='Select Department'
           fluid
-          search
           selection
-          options={onlyNursesNames}
-          loading={nursesLoading}
-          value={valueNurse}
-          disabled={!valueDepart}
-          onChange={(e, item) => this.handleChange(e, item, 'valueNurse')}
+          options={onlyDepNames}
+          onChange={(e, item) => this.handleChange(e, item, 'valueDepart')}
+          value={valueDepart}
         />
-        <Button
-          primary
-          onClick={() => this._add()}
-          disabled={!(valueNurse && valueDepart)}
-          loading={addLoading}
-        >Add</Button>
-        <Button onClick={() => this.clicked()}>Cancel</Button>
-      </Modal.Description>
+      </React.Fragment>
     );
   }
 
-  handleInputChange = (e, data) => {
-    this.setState({ [data['name']]: data.value })
-  }
-
-  getPatientModal() {
-    const { valuePatient, date, treat, patients } = this.state;
-    const { addLoading, type, patientsLoading } = this.props;
-    const disabled = !(valuePatient && treat && date)
-
-    const onlyPatientNames = patients.map(item => {
+  getNurseModal() {
+    const { valueDepart, valueNurse } = this.state;
+    const { nursesDepartmentLoading, addLoading, type, nursesEmails, errorNurse, messageNurse } = this.props;
+    const onlyNursesNames = nursesEmails && nursesEmails.map(item => {
       return   {
         key: item.email,
         text: item.email,
@@ -118,6 +107,58 @@ class LogIn extends Component {
 
     return (
       <Modal.Description>
+        {errorNurse && <div className='error'>{errorNurse}</div>}
+        {messageNurse && <div className='message'>{messageNurse}</div>}
+        {this.getDepartmentsNames()}
+        <p> Select the {type}.</p>
+        <Dropdown
+          placeholder={`Select ${type}`}
+          fluid
+          search
+          selection
+          options={onlyNursesNames}
+          loading={nursesDepartmentLoading}
+          value={valueNurse}
+          disabled={!valueDepart}
+          onChange={(e, item) => this.handleChange(e, item, 'valueNurse')}
+        />
+        <Button
+          primary
+          onClick={() => this.addNewNurse()}
+          disabled={!(valueNurse && valueDepart)}
+          loading={addLoading}
+        >Add</Button>
+        <Button onClick={() => this.cancel()}>Cancel</Button>
+      </Modal.Description>
+    );
+  }
+
+  handleInputChange = (e, data) => {
+    let dateValidation = false;
+    if(data['name'] === 'date' && data.value !== '') {
+      const pattern = /^\d{4}[-](0?[1-9]|1[012])[-](0?[1-9]|[12][0-9]|3[01])+$/i;
+      dateValidation = !pattern.test(data.value);
+    }
+    this.setState({ [data['name']]: data.value, dateValidation })
+  }
+
+  getPatientModal() {
+    const { valuePatient, date, notes, dateValidation } = this.state;
+    const { addPatientLoading, type, emailsPatients, getEmailsPatientsLoading, messagePatient, errorPatient } = this.props;
+    const disabled = (!(valuePatient && notes && date) || dateValidation)
+
+    const onlyPatientNames = emailsPatients && emailsPatients.map(item => {
+      return   {
+        key: item.email,
+        text: item.email,
+        value: item.id
+      }
+    });
+
+    return (
+      <Modal.Description>
+        {messagePatient && <div className='message'>{messagePatient}</div>}
+        {errorPatient && <div className='error'>{errorPatient}</div>}
         <p>Find by email</p>
         <Dropdown
           placeholder={`Select ${type}`}
@@ -125,14 +166,16 @@ class LogIn extends Component {
           search
           selection
           options={onlyPatientNames}
-          loading={patientsLoading}
+          loading={getEmailsPatientsLoading}
           value={valuePatient}
-          disabled={!disabled}
+          disabled={!onlyPatientNames.length}
           onChange={(e, item) => this.handleChange(e, item, 'valuePatient')}
         />
         <p>Date</p>
         <Input
-          placeholder='24/12/2020...'
+          fluid
+          error={dateValidation}
+          placeholder='2020-12-30...'
           name='date'
           value={date}
           onChange={(e, data) => this.handleInputChange(e, data)}
@@ -141,18 +184,18 @@ class LogIn extends Component {
         <Form>
           <TextArea
             placeholder='About treatment...'
-            name='treat'
-            value={treat}
+            name='notes'
+            value={notes}
             onChange={(e, data) => this.handleInputChange(e, data)}
           />
         </Form>
         <Button
           primary
-          onClick={() => this._add()}
+          onClick={() => this.addNewPatient()}
           disabled={disabled}
-          loading={addLoading}
+          loading={addPatientLoading}
         >Add</Button>
-        <Button onClick={() => this.clicked()}>Cancel</Button>
+        <Button onClick={() => this.cancel()}>Cancel</Button>
       </Modal.Description>
     );
   }
@@ -170,38 +213,11 @@ class LogIn extends Component {
     }
   }
 
-  getDepartmentsNames() {
-    const { departments, valueDepart } = this.state;
-    const { type } = this.props;
-
-    const onlyDepNames = departments.map(item => {
-      return   {
-        key: item.name,
-        text: item.name,
-        value: item.id
-      }
-    });
-
-    return (
-      <>
-        <p> Choose the department to where the {type} belongs.</p>
-        <Dropdown
-          placeholder='Select Department'
-          fluid
-          selection
-          options={onlyDepNames}
-          onChange={(e, item) => this.handleChange(e, item, 'valueDepart')}
-          value={valueDepart}
-        />
-      </>
-    );
-  }
-
   render () {
-    const { type, isOpen, clicked } = this.props;
+    const { type, isOpen } = this.props;
 
     return (
-      <Modal open={isOpen} onClose={() => this.clicked()}>
+      <Modal open={isOpen} onClose={() => this.cancel()}>
         <Modal.Header>Add a {type} </Modal.Header>
         <Modal.Content>
           {this.content(type)}
@@ -212,13 +228,27 @@ class LogIn extends Component {
 }
 
 const mapStateToProps = state => ({
-  // nursesLoading - when choosing department to get all the nurses that belongs there
-  // addLoading - when adding new member either nurse or student
+  user: state.auth.user,
+  nursesEmails: state.myNurses.nursesEmails,
+  nursesDepartmentLoading: state.myNurses.nursesDepartmentLoading,
+  addLoading: state.myNurses.addLoading,
+  errorNurse: state.myNurses.errorAddNurse,
+  messageNurse: state.myNurses.messageAdd,
+  emailsPatients: state.myPatients.emailsPatients,
+  getEmailsPatientsLoading: state.myPatients.getEmailsPatientsLoading,
+  messagePatient: state.myPatients.message,
+  addPatientLoading: state.myPatients.addPatientLoading,
+  errorPatient: state.myPatients.error
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    // _login: data => dispatch(login(data)),
+    _getNursesOfDepartments: (token, name) => dispatch(getNursesOfDepartments(token, name)),
+    _addNurse: (token, id) => dispatch(addNurse(token, id)),
+    _addPatient: (token, id, data) => dispatch(addPatient(token, id, data)),
+    _getEmailsOfPatients: token => dispatch(getEmailsOfPatients(token)),
+    _resetIndicatorsNurse: () => dispatch(resetIndicatorsNurse()),
+    _resetIndicatorsPatient: () => dispatch(resetIndicatorsPatient()),
   };
 }
 

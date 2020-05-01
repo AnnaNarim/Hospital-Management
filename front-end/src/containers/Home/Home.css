@@ -1,6 +1,8 @@
 .home {
 	width: 100%;
 	padding: 15px;
+	overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .departments-cards {

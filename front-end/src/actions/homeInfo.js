@@ -20,7 +20,6 @@ export const getInfo = (token, email) => {
       .then(parseJSON)
       .then(response => dispatch({ type: GET_INFO_SUCCESS, info: response }))
       .catch((error) => {
-        console.log('err', error)
         return dispatch({
           type: GET_INFO_ERROR,
           error: error.message
