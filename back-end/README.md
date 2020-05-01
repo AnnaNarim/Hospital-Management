@@ -6,12 +6,12 @@ In the project directory you can run:
 
 <code>npm test</code> - for running the unit tests
 
-As the project assumes that this is a platform for doctors, it is assumed that before doctor's use, some data is already added by admin. That is why, before the doctor is enabled to login, the following steps are done by us as admins:
+<i>As the project assumes that this is a platform for doctors, it is assumed that before doctor's use, some data is already added by admin. That is why, before the doctor is enabled to login, the following steps are done by us as admins:</i>
 
 <ol>
   <li>For creating the database - run db.js file with uncommenting 105th line. This will allow to create the schemas which are defined from schemas folder</li>
   <li>For inserting the inital data (departments, doctors, patients, nurses, headDoctors, etc.which must be added by admin - run dataInsertInHospital.sql file from schemas folder</li>
-  <li>For sigining up doctors, who can later login their page - use http://localhost:3030/users/singup endpoint, which takes the email of doctor and password, checks that there is a doctor in our database with specified password and also checks that specified doctor does not already have an account, then, if everything is right, it creates and the account, thus doctor can already login his/her page.</li>
+  <li>For sigining up doctors, who can later login their page - use [http://localhost:3030/users/signup](http://localhost:3030/users/signup) endpoint, which takes the email of doctor and password, checks that there is a doctor in our database with specified password and also checks that specified doctor does not already have an account, then, if everything is right, it creates and the account, thus doctor can already login his/her page.</li>
 </ol> 
 
 <h2>Technologies Used</h2>
