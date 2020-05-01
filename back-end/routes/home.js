@@ -47,7 +47,7 @@ router.get('/myNurses/view/:id', passport.authenticate('jwt', {session:false}) ,
 //deleteing personal nurse
 router.post('/myNurses/delete/:nurseid', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doctID=await doctors.getDoctorID(req.user.email)
-    doctors.deleteNurse(doctID, req.params.nurseid)
+    doctors.deleteNurse(doctID[0].id, req.params.nurseid)
     res.status(200).send('Nurse is deleted!')
 }))
 
@@ -59,7 +59,7 @@ router.get('/myNurses/add/:deptname' , passport.authenticate('jwt', {session:fal
 
 router.post('/myNurses/add/:nurseid', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doctID=await doctors.getDoctorID(req.user.email)
-    doctors.addNurse(doctID[0].id, req.params.nurseid)
+    await doctors.addNurse(doctID[0].id, req.params.nurseid)
     res.status(201).send('Nurse is added!')
 })) 
 
@@ -80,7 +80,7 @@ router.get('/myPatients/view/:id', passport.authenticate('jwt', {session:false})
   
 }))
 
-//adding patient
+//adding treatment for patient
 router.get('/myPatients/add' , passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const patientsMailsandIDs =await patients.getPatientsMails()
     res.status(200).json(patientsMailsandIDs)  
@@ -88,7 +88,7 @@ router.get('/myPatients/add' , passport.authenticate('jwt', {session:false}) , a
 
 router.post('/myPatients/add/:patientId', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doctID=await doctors.getDoctorID(req.user.email)
-    doctors.addTreatment(doctID[0].id, req.params.patientId, req.body.startDate, req.body.treatment)
+    await doctors.addTreatment(doctID[0].id, req.params.patientId, req.body.startDate, req.body.treatment)
     res.status(201).send('Treatment is added!')
 })) 
 
