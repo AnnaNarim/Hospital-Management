@@ -95,7 +95,7 @@ module.exports={
     },
 
     addTreatment: async ( doctId, patId, startDate, treatment)=>{
-        await treatments.create({doctor_id: doctId ,patient_id:patId, start_date:startDate, notes: treatment})
+        await treatments.create({doctor_id: doctId ,patient_id:patId, start_date: startDate, notes: treatment})
         return 1
     }
 }
