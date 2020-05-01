@@ -32,7 +32,7 @@ router.get('/myNurses/view', passport.authenticate('jwt', {session:false}) , asy
   
 }))
 
-//vieing info of nurse
+//viewing info of nurse
 router.get('/myNurses/view/:id', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const nursesPersonalInfo = await nurses.getPersonalInfoOfNurse(req.params.id)
     const numOfNursesDoctors =await nurses.getNumOfDoctorsNurseIsWorkingWith(req.params.id)
@@ -45,10 +45,10 @@ router.get('/myNurses/view/:id', passport.authenticate('jwt', {session:false}) ,
 }))
 
 //deleteing personal nurse
-router.post('/myNurses/delete/:nurseid', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
+router.delete('/myNurses/delete/:nurseid', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doctID=await doctors.getDoctorID(req.user.email)
-    doctors.deleteNurse(doctID[0].id, req.params.nurseid)
-    res.status(200).send('Nurse is deleted!')
+    await doctors.deleteNurse(doctID[0].id, req.params.nurseid)
+    res.status(201).json('Nurse is deleted!')
 }))
 
 //adding nurse
@@ -60,7 +60,7 @@ router.get('/myNurses/add/:deptname' , passport.authenticate('jwt', {session:fal
 router.post('/myNurses/add/:nurseid', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doctID=await doctors.getDoctorID(req.user.email)
     await doctors.addNurse(doctID[0].id, req.params.nurseid)
-    res.status(201).send('Nurse is added!')
+    res.status(201).json('Nurse is added!')
 })) 
 
 //viewing all patients
@@ -89,7 +89,7 @@ router.get('/myPatients/add' , passport.authenticate('jwt', {session:false}) , a
 router.post('/myPatients/add/:patientId', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const doctID=await doctors.getDoctorID(req.user.email)
     await doctors.addTreatment(doctID[0].id, req.params.patientId, req.body.startDate, req.body.treatment)
-    res.status(201).send('Treatment is added!')
+    res.status(201).json('Treatment is added!')
 })) 
 
 //viewing doctors in specific department

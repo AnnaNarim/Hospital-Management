@@ -43,7 +43,6 @@ module.exports={
             where: { id: doctId},
             raw:true
         })
-
     },
   
     numOfNursesOfDoctor: (doctId)=>{
@@ -56,30 +55,28 @@ module.exports={
 
     numOfPatientsOfDoctor: (doctId)=>{
         return treatments.count(
-            {distinct:true,
-             col: 'patient_id',
-            where: {
+            {
+                distinct:true, 
+                col: 'patient_id',
+                where: {
                 doctor_id: doctId ,
             }
-            }
-        )
+        })
     },
 
     addNurse: async (doctId, nurseId)=>{
-       
         const check = await doctorsNurses.findAll({
             where: { 
                 [Op.and]: [
                 { doctor_id: doctId },
-                { nurse_id:  nurseId }
-              ]
+                { nurse_id:  nurseId }]
             }
         })
 
         if(check.length==0){
             await doctorsNurses.create({ doctor_id: doctId, nurse_id: nurseId})
         return 1
-        }throw new IncorrectNurse()
+        } throw new IncorrectNurse()
     },
 
     deleteNurse: async (doctId, nurseId)=>{
@@ -88,14 +85,14 @@ module.exports={
                 [Op.and]: [
                     { doctor_id:doctId},
                     { nurse_id:nurseId}
-            ]
-        }
-    })
+                ]
+            }
+        })
         return 1
     },
 
     addTreatment: async ( doctId, patId, startDate, treatment)=>{
-        await treatments.create({doctor_id: doctId ,patient_id:patId, start_date:startDate, notes: treatment})
+        await treatments.create({doctor_id: doctId ,patient_id:patId, start_date: startDate, notes: treatment})
         return 1
     }
 }
