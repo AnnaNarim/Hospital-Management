@@ -11,7 +11,7 @@ In the project directory you can run:
 <ol>
   <li>For creating the database - run db.js file with uncommenting 105th line. This will allow to create the schemas which are defined in schemas folder</li>
   <li>For inserting the inital data (departments, doctors, patients, nurses, headDoctors, etc.) which must be added by admin- run dataInsertInHospital.sql file from schemas folder</li>
-  <li>For signing up doctors, who can later login to their pages - use [http://localhost:3030/users/signup](http://localhost:3030/users/signup) endpoint, which takes the email of doctor and password, checks that there is a doctor in our database with specified password and also checks that specified doctor does not already have an account, then, if everything is right, it creates the account, thus doctor can already login his/her page.</li>
+  <li>For signing up doctors, who can later login to their pages - use <a href="http://localhost:3030/users/signup">http://localhost:3030/users/signup</a> endpoint, which takes the email of doctor and password, checks that there is a doctor in our database with specified password and also checks that specified doctor does not already have an account, then, if everything is right, it creates the account, thus doctor can already login his/her page.</li>
 </ol> 
 
 <h2>Technologies Used</h2>
