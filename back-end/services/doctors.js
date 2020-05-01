@@ -77,8 +77,8 @@ module.exports={
         })
 
         if(check.length==0){
-            await doctorsNurses.create({ doctor_id: doctId, nurseId: nurseId})
-        return 
+            await doctorsNurses.create({ doctor_id: doctId, nurse_id: nurseId})
+        return 1
         }throw new IncorrectNurse()
     },
 
@@ -91,12 +91,12 @@ module.exports={
             ]
         }
     })
-        return
+        return 1
     },
 
     addTreatment: async ( doctId, patId, startDate, treatment)=>{
         await treatments.create({doctor_id: doctId ,patient_id:patId, start_date:startDate, notes: treatment})
-        return
+        return 1
     }
 }
 
