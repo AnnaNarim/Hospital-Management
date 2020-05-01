@@ -32,7 +32,6 @@ module.exports={
             where: { nurse_id: nurse},
             raw:true
         })
-
     },
 
     listDoctorsOfNurse: async  (nurse) =>{
@@ -59,7 +58,6 @@ module.exports={
             attributes: ['id', 'email'],
             where: { id: { [Op.in]: nursesIDs}}
         })
-
         return nursesMails
     }
 }

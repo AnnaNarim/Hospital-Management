@@ -32,7 +32,7 @@ router.get('/myNurses/view', passport.authenticate('jwt', {session:false}) , asy
   
 }))
 
-//vieing info of nurse
+//viewing info of nurse
 router.get('/myNurses/view/:id', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const nursesPersonalInfo = await nurses.getPersonalInfoOfNurse(req.params.id)
     const numOfNursesDoctors =await nurses.getNumOfDoctorsNurseIsWorkingWith(req.params.id)
