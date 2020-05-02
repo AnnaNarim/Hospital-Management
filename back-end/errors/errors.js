@@ -28,9 +28,16 @@ class IncorrectNurse extends Error {
     }
 }
 
+class RepeatedTreatment extends Error {
+    constructor() {
+        super('You have already assigned to this patient a treatment on the specified data');
+    }
+}
+
 module.exports = {
     DoctorNotFound,
      UserAlreadyExists,
      EmailIsIncorrect, 
      PasswordIncorrect,
-     IncorrectNurse}
+     IncorrectNurse,
+     RepeatedTreatment}
