@@ -4,6 +4,7 @@ const doctorsNurses=require('../schemas/db').doctorsNurses
 const patients= require('../schemas/db').patients
 const treatments =require('../schemas/db').treatments
 const IncorrectNurse= require('../errors/errors').IncorrectNurse
+const RepeatedTreatment=require('../errors/errors').RepeatedTreatment
 const Op=Sequelize.Op
 
 module.exports={
@@ -92,8 +93,19 @@ module.exports={
     },
 
     addTreatment: async ( doctId, patId, startDate, treatment)=>{
-        await treatments.create({doctor_id: doctId ,patient_id:patId, start_date: startDate, notes: treatment})
-        return 1
+        const check = await treatments.findAll({
+            where: { 
+                [Op.and]: [
+                { doctor_id: doctId },
+                { patient_id: patId },
+                { start_date: startDate}]
+            }
+        })
+
+        if(check.length==0){
+            await treatments.create({doctor_id: doctId ,patient_id:patId, start_date: startDate, notes: treatment})
+            return 1
+        } throw new RepeatedTreatment()
     }
 }
 
