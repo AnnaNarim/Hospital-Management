@@ -7,7 +7,7 @@ const cors = require('cors');
 const http = require('http').Server(app);
 const passport = require('passport');
 require('./passport/passport')(passport)
-const {EmailIsIncorrect, PasswordIncorrect,IncorrectNurse} =require('./errors/errors')
+const {EmailIsIncorrect, PasswordIncorrect,IncorrectNurse, RepeatedTreatment} =require('./errors/errors')
 
 app.use(cors());
 
@@ -31,6 +31,9 @@ app.use((err, req, res, next) => {
       status = 401;
       break;
     case err instanceof IncorrectNurse :
+      status = 400;
+      break;
+    case err instanceof RepeatedTreatment :
       status = 400;
       break;
   }
