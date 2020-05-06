@@ -7,3 +7,14 @@
 .treatments div:first-child {
 	margin-bottom: 7.5px;
 }
+
+#edit {
+	margin-bottom: 0!important;
+	height: auto!important;
+	margin-left: 30px!important;
+	color: #163C7D!important;
+}
+
+#edit i {
+	margin-right: 10px!important;
+}

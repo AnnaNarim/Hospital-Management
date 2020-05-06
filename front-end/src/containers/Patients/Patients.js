@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LeftSideList, Loader } from 'evermut';
-import { Header, Image, Divider, Icon } from 'semantic-ui-react';
-import { getMyPatients, getIndividualPatient } from '../../actions/myPatients';
+import { Header, Image, Divider, Icon, Button, Modal, Input, Form, TextArea } from 'semantic-ui-react';
+import { getMyPatients, getIndividualPatient, resetIndicatorsPatient } from '../../actions/myPatients';
 import '../Nurses/Nurses.css';
 import './Patients.css';
 
@@ -18,6 +18,7 @@ class Patients extends Component {
 
 		this.state = {
       selected: (patientId && parseInt(patientId, 10)) || '',
+      openEdit: false,
 		}
 	}
 
@@ -71,23 +72,87 @@ class Patients extends Component {
   }
 
   getTreatmentsInfo(treatments, numberOfDoctors) {
+    const { openEdit } = this.state;
+    const { email } = this.props.user;
+
     return (
       <div className='personal-info'>
         <div style={{ marginBottom: '15px'}}>Getting treatments from {numberOfDoctors} doctors.</div>
         {treatments.map((item, index) => {
           const { start_date, notes, DoctorName } = item;
-
+          console.log('treatments', item)
           return (
             <div className='treatments' key={`patient-treat-${index}`}>
               <div>
                 <span style={{ marginRight: '30px'}}><Icon name='calendar alternate' /> {start_date}</span>
                 <span><Icon name='doctor' /> {DoctorName}</span>
+                <Button icon basic id='edit' onClick={() => this.openEditModal(notes)}>
+                  <Icon name='edit' />
+                  Edit
+                </Button>
+                {openEdit && this.getEditModal(item)}
               </div>
               <div>{notes || "-"}</div>
             </div>
           );
         }) || null}
       </div>
+    );
+  }
+
+  openEditModal(oldNotes) {
+    this.setState({ openEdit: true, newNotes: oldNotes });
+  }
+
+  closeEditModal() {
+    this.props._resetIndicatorsPatient()
+    this.setState({ openEdit: false });
+  }
+
+  handleInputChange = (e, data) => {
+    this.setState({ newNotes: data.value })
+  }
+
+  _edit() {
+    console.log('edit')
+  }
+
+  getEditModal(item) {
+    const { openEdit, newNotes } = this.state;
+    const { error, editPatientLoading, message } = this.props;
+
+    return (
+      <Modal open={openEdit} onClose={() => this.closeEditModal()}>
+        <Modal.Header>Edit treatment. </Modal.Header>
+        <Modal.Content>
+          <Modal.Description>
+            {error && <div className='error'>{error}</div>}
+            {message && <div className='message'>{message}</div>}
+            <p>Date</p>
+            <Input
+              fluid
+              name='date'
+              value={item.start_date}
+              disabled
+            />
+            <p>Treatment</p>
+            <Form>
+              <TextArea
+                placeholder='About treatment...'
+                name='notes'
+                value={newNotes}
+                onChange={(e, data) => this.handleInputChange(e, data)}
+              />
+            </Form>
+            <Button
+              color='blue'
+              onClick={() => this._edit()}
+              loading={editPatientLoading}
+            >Edit</Button>
+            <Button onClick={() => this.closeEditModal()}>Cancel</Button>
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
     );
   }
 
@@ -152,13 +217,17 @@ const mapStateToProps = state => ({
   myPatients: state.myPatients.myPatients,
   myPatientsLoading: state.myPatients.myPatientsLoading,
   singlePatientLoading: state.myPatients.singlePatientLoading,
+  editPatientLoading: state.myPatients.editPatientLoading,
   singlePatient: state.myPatients.singlePatient,
+  error: state.myPatients.error,
+  message: state.myPatients.message,
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     _getMyPatients: token => dispatch(getMyPatients(token)),
     _getIndividualPatient: (token, id) => dispatch(getIndividualPatient(token, id)),
+    _resetIndicatorsPatient: () => dispatch(resetIndicatorsPatient()),
   };
 }
 
