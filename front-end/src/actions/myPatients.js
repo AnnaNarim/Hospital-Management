@@ -4,6 +4,7 @@ import {
   GET_MY_INDIVIDUAL_PATIENT, GET_MY_INDIVIDUAL_PATIENT_SUCCESS, GET_MY_INDIVIDUAL_PATIENT_ERROR,
   GET_EMAILS_PATIENTS, GET_EMAILS_PATIENTS_SUCCESS, GET_EMAILS_PATIENTS_ERROR,
   ADD_PATIENT, ADD_PATIENT_SUCCESS, ADD_PATIENT_ERROR,
+  EDIT_TREATMENT, EDIT_TREATMENT_SUCCESS, EDIT_TREATMENT_ERROR,
   RESET_INDICATORS
 } from '../events';
 
@@ -97,6 +98,31 @@ export const addPatient = (token, id, data) => {
       .catch((error) => {
         return dispatch({
           type: ADD_PATIENT_ERROR,
+          error: error.message
+        });
+      });
+  });
+}
+
+export const editTreatment = (token, id, startDate, newTreatment) => {
+  return (
+  (dispatch) => {
+    dispatch({ type: EDIT_TREATMENT });
+
+    return fetch(`${APIPATH}/home/myPatients/edit/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ startDate, newTreatment }),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+    })
+      .then(checkStatus)
+      .then(parseJSON)
+      .then(response => dispatch({ type: EDIT_TREATMENT_SUCCESS, message: response }))
+      .catch((error) => {
+        return dispatch({
+          type: EDIT_TREATMENT_ERROR,
           error: error.message
         });
       });

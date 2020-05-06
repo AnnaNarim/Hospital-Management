@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LeftSideList, Loader } from 'evermut';
 import { Header, Image, Divider, Icon, Button, Modal, Input, Form, TextArea } from 'semantic-ui-react';
-import { getMyPatients, getIndividualPatient, resetIndicatorsPatient } from '../../actions/myPatients';
+import { getMyPatients, getIndividualPatient, resetIndicatorsPatient, editTreatment } from '../../actions/myPatients';
 import '../Nurses/Nurses.css';
 import './Patients.css';
+
+const TIME_OUT = 1500;
 
 class Patients extends Component {
 	constructor(props) {
@@ -35,6 +37,12 @@ class Patients extends Component {
     if (match.params.patientId !== params.patientId) {
       _getIndividualPatient(user.accessToken, params.patientId);
       this.setState({ selected: parseInt(params.patientId, 10) })
+    }
+    if (prevProps.editPatientLoading && !this.props.editPatientLoading && !this.props.error) {
+      setTimeout(() => {
+        this.closeEditModal();
+        _getIndividualPatient(user.accessToken, params.patientId);
+      }, TIME_OUT);
     }
   }
 
@@ -73,23 +81,23 @@ class Patients extends Component {
 
   getTreatmentsInfo(treatments, numberOfDoctors) {
     const { openEdit } = this.state;
-    const { email } = this.props.user;
+    const { user } = this.props;
 
     return (
       <div className='personal-info'>
         <div style={{ marginBottom: '15px'}}>Getting treatments from {numberOfDoctors} doctors.</div>
         {treatments.map((item, index) => {
-          const { start_date, notes, DoctorName } = item;
+          const { start_date, notes, DoctorName, email } = item;
           console.log('treatments', item)
           return (
             <div className='treatments' key={`patient-treat-${index}`}>
               <div>
                 <span style={{ marginRight: '30px'}}><Icon name='calendar alternate' /> {start_date}</span>
                 <span><Icon name='doctor' /> {DoctorName}</span>
-                <Button icon basic id='edit' onClick={() => this.openEditModal(notes)}>
+                {(user.email === email) && <Button icon basic id='edit' onClick={() => this.openEditModal(notes)}>
                   <Icon name='edit' />
                   Edit
-                </Button>
+                </Button>}
                 {openEdit && this.getEditModal(item)}
               </div>
               <div>{notes || "-"}</div>
@@ -113,8 +121,12 @@ class Patients extends Component {
     this.setState({ newNotes: data.value })
   }
 
-  _edit() {
-    console.log('edit')
+  _edit(item) {
+    const { selected, newNotes } = this.state;
+    const { user } = this.props;
+    const startDate = item.start_date;
+    const newTreatment = newNotes;
+    this.props._editTreatment(user.accessToken, selected, startDate, newTreatment);
   }
 
   getEditModal(item) {
@@ -146,8 +158,9 @@ class Patients extends Component {
             </Form>
             <Button
               color='blue'
-              onClick={() => this._edit()}
+              onClick={() => this._edit(item)}
               loading={editPatientLoading}
+              disabled={!newNotes}
             >Edit</Button>
             <Button onClick={() => this.closeEditModal()}>Cancel</Button>
           </Modal.Description>
@@ -227,6 +240,7 @@ function mapDispatchToProps(dispatch) {
   return {
     _getMyPatients: token => dispatch(getMyPatients(token)),
     _getIndividualPatient: (token, id) => dispatch(getIndividualPatient(token, id)),
+    _editTreatment: (token, patientId, date, note) => dispatch(editTreatment(token, patientId, date, note)),
     _resetIndicatorsPatient: () => dispatch(resetIndicatorsPatient()),
   };
 }
