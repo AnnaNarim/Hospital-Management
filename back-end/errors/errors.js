@@ -4,6 +4,7 @@ class DoctorNotFound extends Error {
         super('You are not a doctor');
     }
 }
+
 class UserAlreadyExists extends Error {
     constructor() {
         super(`User with this email already exists!`);

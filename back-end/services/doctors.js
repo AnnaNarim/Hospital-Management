@@ -94,6 +94,7 @@ module.exports={
     },
 
     addTreatment: async ( doctId, patId, startDate, treatment)=>{
+
         if(!treatment){
             throw new TreatmentIsEmpty()
         }
@@ -113,9 +114,11 @@ module.exports={
     },
 
     editTreatment: async ( doctId, patId, startDate, newTreatment) => {
+
         if(!newTreatment){
             throw new TreatmentIsEmpty()
         }
+        
         await treatments.update({
             notes: newTreatment },
             {where: { 
