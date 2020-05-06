@@ -21,6 +21,7 @@ class Patients extends Component {
 		this.state = {
       selected: (patientId && parseInt(patientId, 10)) || '',
       openEdit: false,
+      date: '',
 		}
 	}
 
@@ -88,17 +89,16 @@ class Patients extends Component {
         <div style={{ marginBottom: '15px'}}>Getting treatments from {numberOfDoctors} doctors.</div>
         {treatments.map((item, index) => {
           const { start_date, notes, DoctorName, email } = item;
-          console.log('treatments', item)
           return (
             <div className='treatments' key={`patient-treat-${index}`}>
               <div>
                 <span style={{ marginRight: '30px'}}><Icon name='calendar alternate' /> {start_date}</span>
                 <span><Icon name='doctor' /> {DoctorName}</span>
-                {(user.email === email) && <Button icon basic id='edit' onClick={() => this.openEditModal(notes)}>
+                {(user.email === email) && <Button icon basic id='edit' onClick={() => this.openEditModal(notes, start_date)}>
                   <Icon name='edit' />
                   Edit
                 </Button>}
-                {openEdit && this.getEditModal(item)}
+                {(user.email === email) && openEdit && this.getEditModal()}
               </div>
               <div>{notes || "-"}</div>
             </div>
@@ -108,8 +108,8 @@ class Patients extends Component {
     );
   }
 
-  openEditModal(oldNotes) {
-    this.setState({ openEdit: true, newNotes: oldNotes });
+  openEditModal(oldNotes, date) {
+    this.setState({ openEdit: true, newNotes: oldNotes, date });
   }
 
   closeEditModal() {
@@ -121,16 +121,16 @@ class Patients extends Component {
     this.setState({ newNotes: data.value })
   }
 
-  _edit(item) {
-    const { selected, newNotes } = this.state;
+  _edit() {
+    const { selected, newNotes, date } = this.state;
     const { user } = this.props;
-    const startDate = item.start_date;
+    const startDate = date;
     const newTreatment = newNotes;
     this.props._editTreatment(user.accessToken, selected, startDate, newTreatment);
   }
 
-  getEditModal(item) {
-    const { openEdit, newNotes } = this.state;
+  getEditModal() {
+    const { openEdit, newNotes, date } = this.state;
     const { error, editPatientLoading, message } = this.props;
 
     return (
@@ -144,7 +144,7 @@ class Patients extends Component {
             <Input
               fluid
               name='date'
-              value={item.start_date}
+              value={date}
               disabled
             />
             <p>Treatment</p>
@@ -158,7 +158,7 @@ class Patients extends Component {
             </Form>
             <Button
               color='blue'
-              onClick={() => this._edit(item)}
+              onClick={() => this._edit()}
               loading={editPatientLoading}
               disabled={!newNotes}
             >Edit</Button>
