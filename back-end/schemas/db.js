@@ -6,7 +6,7 @@ const sequelize= new Sequelize('hospital2', 'root', 'silva123', {
   dialect: 'mysql', //|'sqlite'|'postgres'|'mssql'
 }); 
 
-//test the connection
+// test the connection
 // sequelize.authenticate().then(() => {
 //   console.log('Connection has been established successfully.');
 // }).catch(err => {

@@ -28,6 +28,12 @@ class IncorrectNurse extends Error {
     }
 }
 
+class TreatmentIsEmpty extends Error {
+    constructor() {
+        super('Treatment-note is empty');
+    }
+}
+
 class RepeatedTreatment extends Error {
     constructor() {
         super('You have already assigned to this patient a treatment on the specified data');
@@ -40,4 +46,5 @@ module.exports = {
      EmailIsIncorrect, 
      PasswordIncorrect,
      IncorrectNurse,
-     RepeatedTreatment}
+     RepeatedTreatment,
+     TreatmentIsEmpty}
