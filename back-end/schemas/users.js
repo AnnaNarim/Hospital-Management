@@ -2,6 +2,7 @@ const bcrypt =require('bcrypt')
 const Sequelize=require('sequelize')
 const  DoctorNotFound = require(`../errors/errors.js`).DoctorNotFound;
 const EmailIsIncorrect = require(`../errors/errors.js`).EmailIsIncorrect;
+const UserAlreadyExists =require(`../errors/errors.js`).UserAlreadyExists
 
 module.exports = (sequelize, DataTypes, doctors) => {
     
@@ -21,6 +22,19 @@ module.exports = (sequelize, DataTypes, doctors) => {
     });
     
     users.CreateNewUser = async function(new_user) {
+
+        //check that you do not create account for user which already exists
+        let check = await users.findAll({
+            attributes: ['id'],
+            where: {
+                email: new_user.email
+            },
+            raw:true
+        })
+
+        if(check.length!=0){
+            throw new UserAlreadyExists()
+        }
            
         //select emails from doctors table
         let emails = await doctors.findAll({
