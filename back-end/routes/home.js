@@ -80,6 +80,13 @@ router.get('/myPatients/view/:id', passport.authenticate('jwt', {session:false})
   
 }))
 
+//edit treatment
+router.put('/myPatients/edit/:id', passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
+    const doctID=await doctors.getDoctorID(req.user.email)
+    await doctors.editTreatment(doctID[0].id, req.params.id, req.body.startDate, req.body.newTreatment)
+    res.status(201).json('Treatment is Changed!')  
+}))
+
 //adding treatment for patient
 router.get('/myPatients/add' , passport.authenticate('jwt', {session:false}) , asyncHandler(async (req,res)=>{
     const patientsMailsandIDs =await patients.getPatientsMails()

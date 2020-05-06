@@ -5,6 +5,7 @@ const patients= require('../schemas/db').patients
 const treatments =require('../schemas/db').treatments
 const IncorrectNurse= require('../errors/errors').IncorrectNurse
 const RepeatedTreatment=require('../errors/errors').RepeatedTreatment
+const TreatmentIsEmpty=require('../errors/errors').TreatmentIsEmpty
 const Op=Sequelize.Op
 
 module.exports={
@@ -93,6 +94,9 @@ module.exports={
     },
 
     addTreatment: async ( doctId, patId, startDate, treatment)=>{
+        if(!treatment){
+            throw new TreatmentIsEmpty()
+        }
         const check = await treatments.findAll({
             where: { 
                 [Op.and]: [
@@ -106,6 +110,22 @@ module.exports={
             await treatments.create({doctor_id: doctId ,patient_id:patId, start_date: startDate, notes: treatment})
             return 1
         } throw new RepeatedTreatment()
+    },
+
+    editTreatment: async ( doctId, patId, startDate, newTreatment) => {
+        if(!newTreatment){
+            throw new TreatmentIsEmpty()
+        }
+        await treatments.update({
+            notes: newTreatment },
+            {where: { 
+                [Op.and]: [
+                { doctor_id: doctId },
+                { patient_id: patId },
+                { start_date: startDate}]
+            }
+        })
+        return 1
     }
 }
 
