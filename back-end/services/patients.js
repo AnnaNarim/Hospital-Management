@@ -35,7 +35,7 @@ module.exports={
         doctorsTreatingID = doctorsTreatingID.map(doct => doct.doctor_id)
 
         const doctorsTreating=await doctors.findAll({
-            attributes: ['id', [Sequelize.fn('CONCAT', Sequelize.col('firstName'), ' ',  Sequelize.col('lastName')), 'DoctorName']],
+            attributes: ['id','email', [Sequelize.fn('CONCAT', Sequelize.col('firstName'), ' ',  Sequelize.col('lastName')), 'DoctorName']],
             where: { 
                 id: { [Op.in]: doctorsTreatingID }
             },
@@ -52,8 +52,9 @@ module.exports={
             return _.assign(obj, _.find(doctorsTreating, {id: obj.doctor_id}));
         });
 
-        doctorWithTreatment=doctorWithTreatment.map(({ DoctorName, start_date, notes }) => ({
+        doctorWithTreatment=doctorWithTreatment.map(({ DoctorName, email, start_date, notes }) => ({
             DoctorName ,
+            email,
             start_date, 
             notes 
           }));
